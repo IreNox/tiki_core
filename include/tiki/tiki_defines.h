@@ -249,4 +249,6 @@
 
 #define TIKI_STATIC_ASSERT( expr )		static_assert( ( expr ), #expr )
 
+#define TIKI_ARRAY_COUNT( arr )			(sizeof( arr ) / sizeof( *(arr)) )
+
 #define TIKI_USE( var )					(void)var
