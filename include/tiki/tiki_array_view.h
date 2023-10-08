@@ -14,10 +14,10 @@ namespace tiki
 
 		void				set( const T* pData, uintsize length );
 
-		bool				isSet() const { return m_pData != nullptr; }
+		bool				isSet() const { return m_data != nullptr; }
 		uintsize			getLength() const { return m_length; }
 
-		const T*			getData() const { return m_pData; }
+		const T*			getData() const { return m_data; }
 
 		const T*			getBegin() const;
 		const T*			getEnd() const;
@@ -30,9 +30,9 @@ namespace tiki
 		const T*			begin() const { return getBegin(); }
 		const T*			end() const { return getEnd(); }
 
-	private:
+	protected:
 
-		const T*			m_pData;
+		const T*			m_data;
 		uintsize			m_length;
 	};
 }

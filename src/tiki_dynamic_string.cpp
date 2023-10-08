@@ -3,64 +3,72 @@
 #include "tiki/tiki_ascii.h"
 #include "tiki/tiki_functions.h"
 
+#include <cstdarg>
+#include <cstdio>
 #include <cstring>
 
 namespace tiki
 {
 	DynamicString::DynamicString()
-		: m_pString( nullptr ), m_capacity( 0u ), m_length( 0u )
 	{
 	}
 
+	DynamicString::DynamicString( const StringView& string )
+	{
+		assign( string );
+	}
+
 	DynamicString::DynamicString( const DynamicString& string )
-		: m_pString( nullptr ), m_capacity( 0u ), m_length( 0u )
 	{
 		assign( string );
 	}
 
 	DynamicString::DynamicString( const char* pString )
-		: m_pString( nullptr ), m_capacity( 0u ), m_length( 0u )
 	{
 		const uintreg stringLength = strlen( pString );
 		checkCapacity( stringLength );
-		memcpy( m_pString, pString, stringLength );
+		memcpy( m_string, pString, stringLength );
 		terminate( stringLength );
 	}
 
 	DynamicString::DynamicString( const char* pString, uintreg stringLength )
-		: m_pString( nullptr ), m_capacity( 0u ), m_length( 0u )
 	{
 		TIKI_ASSERT( strlen( pString ) >= stringLength );
 
 		checkCapacity( stringLength );
-		memcpy( m_pString, pString, stringLength );
+		memcpy( m_string, pString, stringLength );
 		terminate( stringLength );
 	}
 
 	DynamicString::~DynamicString()
 	{
-		delete[] m_pString;
+		delete[] m_string;
 	}
 
-	void DynamicString::assign( const char* pString )
+	void DynamicString::assign( const char* string )
 	{
-		const uintptr length = strlen( pString );
+		const uintsize length = strlen( string );
+		assign( string, length );
+	}
+
+	void DynamicString::assign( const char* string, size_t length )
+	{
 		checkCapacity( length );
-		memcpy( m_pString, pString, length );
+		memcpy( m_string, string, length );
 		terminate( length );
 	}
 
 	void DynamicString::assign( const StringView& string )
 	{
 		checkCapacity( string.getLength() );
-		memcpy( m_pString, string.getData(), string.getLength() );
+		memcpy( m_string, string.getData(), string.getLength() );
 		terminate( string.getLength() );
 	}
 
 	void DynamicString::assign( const DynamicString& string )
 	{
 		checkCapacity( string.m_length );
-		memcpy( m_pString, string.m_pString, string.m_length );
+		memcpy( m_string, string.m_string, string.m_length );
 		terminate( string.m_length );
 	}
 
@@ -68,7 +76,7 @@ namespace tiki
 	{
 		if( m_capacity > 0u )
 		{
-			m_pString[ 0u ] = 0u;
+			m_string[ 0u ] = 0u;
 		}
 
 		m_length = 0u;
@@ -83,7 +91,7 @@ namespace tiki
 	{
 		TIKI_ASSERT( newLength < m_capacity );
 		m_length = newLength;
-		m_pString[ m_length ] = '\0';
+		m_string[ m_length ] = '\0';
 	}
 
 	uintreg DynamicString::indexOf( char c, uintreg index /*= 0u*/ ) const
@@ -93,7 +101,7 @@ namespace tiki
 		uintreg i = index;
 		while( i < m_length )
 		{
-			if( m_pString[ i ] == c )
+			if( m_string[ i ] == c )
 			{
 				return i;
 			}
@@ -116,7 +124,7 @@ namespace tiki
 			bool found = true;
 			while( b < str.m_length )
 			{
-				if( m_pString[ i + b ] != str.m_pString[ b ] )
+				if( m_string[ i + b ] != str.m_string[ b ] )
 				{
 					found = false;
 					break;
@@ -140,7 +148,7 @@ namespace tiki
 		index = TIKI_MIN( index, m_length - 1u );
 		while( index < m_length )
 		{
-			if( m_pString[ index ] == c )
+			if( m_string[ index ] == c )
 			{
 				return index;
 			}
@@ -160,7 +168,7 @@ namespace tiki
 			bool found = true;
 			while( b < str.m_length )
 			{
-				if( m_pString[ index + b ] != str.m_pString[ b ] )
+				if( m_string[ index + b ] != str.m_string[ b ] )
 				{
 					found = false;
 					break;
@@ -194,7 +202,7 @@ namespace tiki
 	{
 		if( m_length < 1 ) return false;
 
-		return m_pString[ 0 ] == c;
+		return m_string[ 0 ] == c;
 	}
 
 	bool DynamicString::startsWith( const DynamicString& str ) const
@@ -204,7 +212,7 @@ namespace tiki
 		uintreg i = 0;
 		while( i < str.m_length )
 		{
-			if( m_pString[ i ] != str.m_pString[ i ] ) return false;
+			if( m_string[ i ] != str.m_string[ i ] ) return false;
 			i++;
 		}
 
@@ -215,7 +223,7 @@ namespace tiki
 	{
 		if( m_length < 1 ) return false;
 
-		return m_pString[ m_length - 1 ] == c;
+		return m_string[ m_length - 1 ] == c;
 	}
 
 	bool DynamicString::endsWith( const DynamicString& str ) const
@@ -226,7 +234,7 @@ namespace tiki
 		uintreg i = m_length - str.m_length;
 		while( i < m_length )
 		{
-			if( m_pString[ i ] != str.m_pString[ b ] ) return false;
+			if( m_string[ i ] != str.m_string[ b ] ) return false;
 			i++;
 			b++;
 		}
@@ -247,7 +255,7 @@ namespace tiki
 			bool found = true;
 			while( b < substr.m_length )
 			{
-				if( m_pString[ index + b ] != substr.m_pString[ b ] )
+				if( m_string[ index + b ] != substr.m_string[ b ] )
 				{
 					found = false;
 					break;
@@ -272,13 +280,13 @@ namespace tiki
 	DynamicString DynamicString::trim() const
 	{
 		uintreg startIndex = 0u;
-		while( ascii::isWhitespace( m_pString[ startIndex ] ) && startIndex < getLength() )
+		while( ascii::isWhitespace( m_string[ startIndex ] ) && startIndex < getLength() )
 		{
 			startIndex++;
 		}
 
 		uintreg endIndex = getLength();
-		while( ascii::isWhitespace( m_pString[ endIndex ] ) && endIndex > 0u )
+		while( ascii::isWhitespace( m_string[ endIndex ] ) && endIndex > 0u )
 		{
 			endIndex--;
 		}
@@ -311,13 +319,13 @@ namespace tiki
 	DynamicString DynamicString::subString( uintreg startIndex ) const
 	{
 		TIKI_ASSERT( startIndex <= m_length );
-		return DynamicString( m_pString + startIndex, m_length - startIndex );
+		return DynamicString( m_string + startIndex, m_length - startIndex );
 	}
 
 	DynamicString DynamicString::subString( uintreg startIndex, uintreg length ) const
 	{
 		TIKI_ASSERT( startIndex + length <= m_length );
-		return DynamicString( m_pString + startIndex, length );
+		return DynamicString( m_string + startIndex, length );
 	}
 
 	DynamicString DynamicString::replace( char oldChar, char newChar ) const
@@ -355,18 +363,18 @@ namespace tiki
 			const uintreg index			= indexOf( oldString, offsetOld );
 			const uintreg oldDifferent	= index - offsetOld;
 
-			memcpy( result.m_pString + offsetNew, m_pString + offsetOld, index - offsetOld );
+			memcpy( result.m_string + offsetNew, m_string + offsetOld, index - offsetOld );
 			offsetOld += oldDifferent;
 			offsetNew += oldDifferent;
 
-			memcpy( result.m_pString + offsetNew, newString.m_pString, newString.m_length );
+			memcpy( result.m_string + offsetNew, newString.m_string, newString.m_length );
 			offsetOld += oldString.m_length;
 			offsetNew += newString.m_length;
 
 			i++;
 		}
 
-		memcpy( result.m_pString + offsetNew, m_pString + offsetOld, m_length - offsetOld );
+		memcpy( result.m_string + offsetNew, m_string + offsetOld, m_length - offsetOld );
 		result.terminate( length );
 
 		return result;
@@ -379,9 +387,9 @@ namespace tiki
 		DynamicString result;
 		result.checkCapacity( m_length + 1u );
 
-		memcpy( result.m_pString, m_pString, index );
-		result.m_pString[ index ] = c;
-		memcpy( result.m_pString + index, m_pString, m_length - index );
+		memcpy( result.m_string, m_string, index );
+		result.m_string[ index ] = c;
+		memcpy( result.m_string + index, m_string, m_length - index );
 		result.terminate( m_length + 1u );
 
 		return result;
@@ -394,8 +402,8 @@ namespace tiki
 
 		DynamicString result;
 		result.checkCapacity( m_length - 1u );
-		memcpy( result.m_pString, m_pString, index );
-		memcpy( result.m_pString + index, m_pString, m_length - index );
+		memcpy( result.m_string, m_string, index );
+		memcpy( result.m_string + index, m_string, m_length - index );
 		result.terminate( m_length - 1u );
 
 		return result;
@@ -405,7 +413,7 @@ namespace tiki
 	{
 		DynamicString result;
 		result.checkCapacity( m_length - 1u );
-		memcpy( result.m_pString, m_pString, m_length - 1u );
+		memcpy( result.m_string, m_string, m_length - 1u );
 		result.terminate( m_length - 1u );
 
 		return result;
@@ -415,8 +423,8 @@ namespace tiki
 	{
 		DynamicString result;
 		result.checkCapacity( m_length + 1u );
-		memcpy( result.m_pString, m_pString, m_length );
-		result.m_pString[ m_length ] = c;
+		memcpy( result.m_string, m_string, m_length );
+		result.m_string[ m_length ] = c;
 		result.terminate( m_length + 1u );
 
 		return result;
@@ -424,14 +432,14 @@ namespace tiki
 
 	char* DynamicString::beginWrite()
 	{
-		return m_pString;
+		return m_string;
 	}
 
 	void DynamicString::endWrite( uintreg newLength /*= (uintreg)-1 */ )
 	{
 		if( newLength == (uintreg)-1 )
 		{
-			newLength = strlen( m_pString );
+			newLength = strlen( m_string );
 		}
 
 		m_length = newLength;
@@ -439,39 +447,39 @@ namespace tiki
 
 	const char* DynamicString::toConstCharPointer() const
 	{
-		return m_pString;
+		return m_string;
 	}
 
 	char* DynamicString::getBegin()
 	{
-		return m_pString;
+		return m_string;
 	}
 
 	const char* DynamicString::getBegin() const
 	{
-		return m_pString;
+		return m_string;
 	}
 
 	char* DynamicString::getEnd()
 	{
-		return m_pString + m_length;
+		return m_string + m_length;
 	}
 
 	const char* DynamicString::getEnd() const
 	{
-		return m_pString + m_length;
+		return m_string + m_length;
 	}
 
 	char& DynamicString::operator[]( uintreg index )
 	{
 		TIKI_ASSERT( index < m_length );
-		return m_pString[ index ];
+		return m_string[ index ];
 	}
 
 	const char& DynamicString::operator[]( uintreg index ) const
 	{
 		TIKI_ASSERT( index < m_length );
-		return m_pString[ index ];
+		return m_string[ index ];
 	}
 
 	DynamicString& DynamicString::operator=( const char* rhs )
@@ -497,7 +505,7 @@ namespace tiki
 		const uintreg stringLength = strlen( pString );
 
 		checkCapacity( m_length + stringLength );
-		memcpy( m_pString + m_length, pString, stringLength );
+		memcpy( m_string + m_length, pString, stringLength );
 		terminate( m_length + stringLength );
 
 		return *this;
@@ -506,7 +514,7 @@ namespace tiki
 	DynamicString& DynamicString::operator+=( const StringView& rhs )
 	{
 		checkCapacity( m_length + rhs.getLength() );
-		memcpy( m_pString + m_length, rhs.getData(), rhs.getLength() );
+		memcpy( m_string + m_length, rhs.getData(), rhs.getLength() );
 		terminate( m_length + rhs.getLength() );
 
 		return *this;
@@ -515,7 +523,7 @@ namespace tiki
 	DynamicString& DynamicString::operator+=( const DynamicString& rhs )
 	{
 		checkCapacity( m_length + rhs.m_length );
-		memcpy( m_pString + m_length, rhs.m_pString, rhs.m_length );
+		memcpy( m_string + m_length, rhs.m_string, rhs.m_length );
 		terminate( m_length + rhs.m_length );
 
 		return *this;
@@ -527,8 +535,8 @@ namespace tiki
 
 		DynamicString result;
 		result.checkCapacity( m_length + stringLength );
-		memcpy( result.m_pString, m_pString, m_length );
-		memcpy( result.m_pString + m_length, pString, stringLength );
+		memcpy( result.m_string, m_string, m_length );
+		memcpy( result.m_string + m_length, pString, stringLength );
 		result.terminate( m_length + stringLength );
 
 		return result;
@@ -538,8 +546,8 @@ namespace tiki
 	{
 		DynamicString result;
 		result.checkCapacity( m_length + rhs.getLength() );
-		memcpy( result.m_pString, m_pString, m_length );
-		memcpy( result.m_pString + m_length, rhs.getData(), rhs.getLength() );
+		memcpy( result.m_string, m_string, m_length );
+		memcpy( result.m_string + m_length, rhs.getData(), rhs.getLength() );
 		result.terminate( m_length + rhs.getLength() );
 
 		return result;
@@ -549,8 +557,8 @@ namespace tiki
 	{
 		DynamicString result;
 		result.checkCapacity( m_length + rhs.m_length );
-		memcpy( result.m_pString, m_pString, m_length );
-		memcpy( result.m_pString + m_length, rhs.m_pString, rhs.m_length );
+		memcpy( result.m_string, m_string, m_length );
+		memcpy( result.m_string + m_length, rhs.m_string, rhs.m_length );
 		result.terminate( m_length + rhs.m_length );
 
 		return result;
@@ -563,22 +571,32 @@ namespace tiki
 			return false;
 		}
 
-		return strcmp( m_pString, rhs.m_pString ) == 0;
+		return strcmp( m_string, rhs.m_string ) == 0;
 	}
 
 	bool DynamicString::operator==( const char* pString ) const
 	{
-		return strcmp( m_pString, pString ) == 0;
+		return strcmp( m_string, pString ) == 0;
 	}
 
 	bool DynamicString::operator!=( const DynamicString& rhs ) const
 	{
-		return strcmp( m_pString, rhs.m_pString ) != 0;
+		return strcmp( m_string, rhs.m_string ) != 0;
 	}
 
 	bool DynamicString::operator!=( const char* pString ) const
 	{
-		return strcmp( m_pString, pString ) != 0;
+		return strcmp( m_string, pString ) != 0;
+	}
+
+	DynamicString::operator const char*() const
+	{
+		return m_string;
+	}
+
+	DynamicString::operator StringView() const
+	{
+		return StringView( m_string, m_length );
 	}
 
 	void DynamicString::checkCapacity( uintreg size )
@@ -592,10 +610,10 @@ namespace tiki
 		char* pNewString = new char[ nextCapacity ];
 		TIKI_ASSERT( pNewString != nullptr );
 
-		memcpy( pNewString, m_pString, m_length );
+		memcpy( pNewString, m_string, m_length );
 
-		delete[] m_pString;
-		m_pString = pNewString;
+		delete[] m_string;
+		m_string = pNewString;
 		m_capacity = nextCapacity;
 
 		terminate( m_length );
@@ -604,5 +622,45 @@ namespace tiki
 	DynamicString operator ""_s( const char* pString, uintreg length )
 	{
 		return DynamicString( pString, length );
+	}
+
+	DynamicString DynamicString::format( const char* format, ... )
+	{
+		va_list args;
+		va_start( args, format );
+		const DynamicString result = formatArgs( format, args );
+		va_end( args );
+
+		return result;
+	}
+
+	DynamicString DynamicString::formatArgs( const char* format, va_list args )
+	{
+		char buffer[ 256u ];
+
+		int length = vsnprintf( buffer, sizeof( buffer ), format, args );
+		if( length < 0 )
+		{
+			return DynamicString();
+		}
+		else if( length < sizeof( buffer ) )
+		{
+			DynamicString result;
+			result.assign( buffer, length );
+
+			return result;
+		}
+
+		DynamicString result;
+		result.reserve( length + 1u );
+
+		length = vsnprintf( result.m_string, result.m_capacity, format, args );
+		if( length < 0 )
+		{
+			return DynamicString();
+		}
+
+		result.terminate( length );
+		return result;
 	}
 }

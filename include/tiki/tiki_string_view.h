@@ -8,11 +8,18 @@ namespace tiki
 	{
 	public:
 
-							StringView();
-		explicit			StringView( const char* cstring );
-							StringView( const char* string, uintsize length );
+		inline 			StringView();
+		inline explicit	StringView( const char* cstring );
+		inline 			StringView( const char* string, uintsize length );
 		template< uintsize TLen >
-							StringView( const char (&string)[ TLen ] );
+		inline 			StringView( const char (&string)[ TLen ] );
+
+		inline bool		operator==( const char* rhs ) const;
+		inline bool		operator==( const StringView& rhs ) const;
+		inline bool		operator!=( const char* rhs ) const;
+		inline bool		operator!=( const StringView& rhs ) const;
+
+		inline operator	const char*() const;
 	};
 }
 

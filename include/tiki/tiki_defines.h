@@ -146,7 +146,7 @@
 #endif
 
 #if !defined( TIKI_DEBUG )
-#	if defined( _DEBUG )
+#	if defined( _DEBUG ) || defined( __DEBUG__ )
 #		define TIKI_DEBUG				TIKI_ON
 #	else
 #		define TIKI_DEBUG				TIKI_OFF

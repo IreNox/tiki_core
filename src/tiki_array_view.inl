@@ -9,15 +9,15 @@ namespace tiki
 	}
 
 	template< class T >
-	ArrayView< T >::ArrayView( const T* pData, uintreg length )
+	ArrayView< T >::ArrayView( const T* pData, uintsize length )
 	{
 		set( pData, length );
 	}
 
 	template< class T >
-	void ArrayView<T>::set( const T* pData, uintreg length )
+	void ArrayView<T>::set( const T* pData, uintsize length )
 	{
-		m_pData		= pData;
+		m_data		= pData;
 		m_length	= length;
 	}
 
@@ -48,7 +48,7 @@ namespace tiki
 	}
 
 	template< class T >
-	const T& ArrayView< T >::operator[]( uintreg index ) const
+	const T& ArrayView< T >::operator[]( uintsize index ) const
 	{
 		TIKI_ASSERT( index < m_length );
 		return m_pData[ index ];
