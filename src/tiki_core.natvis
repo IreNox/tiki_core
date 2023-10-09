@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-	<Type Name="conct::DynamicString">
-		<DisplayString>{m_pString,s}</DisplayString>
+	<Type Name="tiki::DynamicString">
+		<DisplayString>{m_data,s}</DisplayString>
 		<Expand>
-			<Item Name="[pointer]" ExcludeView="simple">m_pString</Item>
+			<Item Name="[pointer]" ExcludeView="simple">m_data</Item>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
 			<Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
 			<ArrayItems>
 				<Size>m_length</Size>
-				<ValuePointer>m_pString</ValuePointer>
+				<ValuePointer>m_data</ValuePointer>
 			</ArrayItems>
 		</Expand>
 	</Type>
-	<Type Name="conct::Path">
+	<Type Name="tiki::Path">
 		<DisplayString>{{ path="{m_path}" }}</DisplayString>
 	</Type>
-	<Type Name="conct::Array&lt;*&gt;">
+	<Type Name="tiki::Array&lt;*&gt;">
 		<DisplayString>{{ length={m_length} }}</DisplayString>
 		<Expand>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
@@ -25,7 +25,7 @@
 			</ArrayItems>
 		</Expand>
 	</Type>
-	<Type Name="conct::Vector&lt;*&gt;">
+	<Type Name="tiki::DynamicArray&lt;*&gt;">
 		<DisplayString>{{ length={m_length} }}</DisplayString>
 		<Expand>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
@@ -36,7 +36,7 @@
 			</ArrayItems>
 		</Expand>
 	</Type>
-	<Type Name="conct::Map&lt;*&gt;">
+	<Type Name="tiki::Map&lt;*&gt;">
 		<DisplayString>{{ length={m_length} }}</DisplayString>
 		<Expand>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
