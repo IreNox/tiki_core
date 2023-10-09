@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tiki_functions.h"
+#include "tiki/tiki_functions.h"
 
 namespace tiki
 {
@@ -18,7 +18,7 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	Map< TKey, TValue >::Map( const std::initializer_list< PairType >& initList )
+	Map< TKey, TValue >::Map( const std::initializer_list< Pair >& initList )
 		: m_pData( nullptr ), m_length( 0u ), m_capacity( 0u )
 	{
 		for( const PairType& pair : initList )
@@ -40,13 +40,13 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	uintreg Map< TKey, TValue >::getLength() const
+	uintsize Map< TKey, TValue >::getLength() const
 	{
 		return m_length;
 	}
 
 	template< class TKey, class TValue >
-	uintreg Map< TKey, TValue >::getCapacity() const
+	uintsize Map< TKey, TValue >::getCapacity() const
 	{
 		return m_capacity;
 	}
@@ -58,22 +58,22 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	void Map< TKey, TValue >::reserve( uintreg size )
+	void Map< TKey, TValue >::reserve( uintsize size )
 	{
 		checkCapacity( size );
 	}
 
 	template< class TKey, class TValue >
-	bool conct::Map<TKey, TValue>::hasKey( const TKey& key ) const
+	bool Map<TKey, TValue>::hasKey( const TKey& key ) const
 	{
-		return findIndex( key ) != (uintreg)-1;
+		return findIndex( key ) != (uintsize)-1;
 	}
 
 	template< class TKey, class TValue >
 	TValue* Map<TKey, TValue>::find( const TKey& key )
 	{
-		const uintreg index = findIndex( key );
-		if( index == (uintreg)-1 )
+		const uintsize index = findIndex( key );
+		if( index == (uintsize)-1 )
 		{
 			return nullptr;
 		}
@@ -84,8 +84,8 @@ namespace tiki
 	template< class TKey, class TValue >
 	const TValue* Map<TKey, TValue>::find( const TKey& key ) const
 	{
-		const uintreg index = findIndex( key );
-		if( index == (uintreg)-1 )
+		const uintsize index = findIndex( key );
+		if( index == (uintsize)-1 )
 		{
 			return nullptr;
 		}
@@ -96,8 +96,8 @@ namespace tiki
 	template< class TKey, class TValue >
 	bool Map<TKey, TValue>::findAndCopy( TValue& target, const TKey& key ) const
 	{
-		const uintreg index = findIndex( key );
-		if( index == ( uintreg )-1 )
+		const uintsize index = findIndex( key );
+		if( index == ( uintsize )-1 )
 		{
 			return false;
 		}
@@ -109,7 +109,7 @@ namespace tiki
 	template< typename TKey, typename TValue >
 	typename Map< TKey, TValue >::InsertResult Map< TKey, TValue >::insertKey( const TKey& key )
 	{
-		const uintreg pos = findPositionIndex( key );
+		const uintsize pos = findPositionIndex( key );
 
 		PairType& pair1 = m_pData[ pos ];
 		if( pos < m_length && pair1.key == key )
@@ -122,7 +122,7 @@ namespace tiki
 
 		checkCapacity( m_length + 1 );
 
-		for( uintreg i = m_length; i > pos; --i )
+		for( uintsize i = m_length; i > pos; --i )
 		{
 			m_pData[ i ] = m_pData[ i - 1 ];
 		}
@@ -146,16 +146,16 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	bool Map<TKey, TValue>::remove( const TKey& key )
+	bool Map< TKey, TValue >::remove( const TKey& key )
 	{
-		const uintreg index = findIndex( key );
-		if( index == ( uintreg )-1 )
+		const uintsize index = findIndex( key );
+		if( index == ( uintsize )-1 )
 		{
 			return false;
 		}
 
 		m_length--;
-		for( uintreg i = index; i < m_length; ++i )
+		for( uintsize i = index; i < m_length; ++i )
 		{
 			m_pData[ i ] = m_pData[ i + 1u ];
 		}
@@ -164,45 +164,52 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	Pair< TKey, TValue >* Map< TKey, TValue >::getData()
+	typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getData()
 	{
 		return m_pData;
 	}
 
 	template< class TKey, class TValue >
-	const Pair< TKey, TValue >* Map< TKey, TValue >::getData() const
+	const typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getData() const
 	{
 		return m_pData;
 	}
 
 	template< class TKey, class TValue >
-	Pair< TKey, TValue >* Map< TKey, TValue >::getBegin()
+	typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getBegin()
 	{
 		return m_pData;
 	}
 
 	template< class TKey, class TValue >
-	const Pair< TKey, TValue >* Map< TKey, TValue >::getBegin() const
+	const typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getBegin() const
 	{
 		return m_pData;
 	}
 
 	template< class TKey, class TValue >
-	Pair< TKey, TValue >* Map< TKey, TValue >::getEnd()
+	typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getEnd()
 	{
 		return m_pData + m_length;
 	}
 
 	template< class TKey, class TValue >
-	const Pair< TKey, TValue >* Map< TKey, TValue >::getEnd() const
+	const typename Map< TKey, TValue >::Pair* Map< TKey, TValue >::getEnd() const
 	{
 		return m_pData + m_length;
 	}
 
+
 	template< class TKey, class TValue >
-	ArrayView< Pair< TKey, TValue > > Map< TKey, TValue >::toArrayView() const
+	Array< typename Map< TKey, TValue >::Pair > Map< TKey, TValue >::toArray() const
 	{
-		return ArrayView< PairType >( m_pData, m_length );
+		return Array< Pair >( m_pData, m_length );
+	}
+
+	template< class TKey, class TValue >
+	ArrayView< typename Map< TKey, TValue >::Pair > Map< TKey, TValue >::toView() const
+	{
+		return ArrayView< Pair >( m_pData, m_length );
 	}
 
 	template< class TKey, class TValue >
@@ -211,7 +218,7 @@ namespace tiki
 		clear();
 		checkCapacity( rhs.m_length );
 		m_length = rhs.m_length;
-		for( uintreg i = 0u; i < m_length; ++i )
+		for( uintsize i = 0u; i < m_length; ++i )
 		{
 			m_pData[ i ] = rhs.m_pData[ i ];
 		}
@@ -228,8 +235,8 @@ namespace tiki
 	template< class TKey, class TValue >
 	const TValue& Map< TKey, TValue >::operator[]( const TKey& key ) const
 	{
-		const uintreg index = findIndex( key );
-		if( index == (uintreg)-1 )
+		const uintsize index = findIndex( key );
+		if( index == (uintsize)-1 )
 		{
 			static TValue emptyValue = TValue();
 			return emptyValue;
@@ -239,11 +246,11 @@ namespace tiki
 	}
 
 	template<typename TKey, typename TValue>
-	uintreg Map< TKey, TValue >::findIndex( const TKey& key ) const
+	uintsize Map< TKey, TValue >::findIndex( const TKey& key ) const
 	{
 		if( m_length == 0u )
 		{
-			return (uintreg)-1;
+			return (uintsize)-1;
 		}
 
 		int imin = 0u;
@@ -253,7 +260,7 @@ namespace tiki
 			const int imid =  (imax + imin) / 2u;
 			if( imid < 0 || imid >= (int)m_length )
 			{
-				return (uintreg)-1;
+				return (uintsize)-1;
 			}
 
 			if( m_pData[ imid ].key == key )
@@ -270,11 +277,11 @@ namespace tiki
 			}
 		}
 
-		return (uintreg)-1;
+		return (uintsize)-1;
 	}
 
 	template<typename TKey, typename TValue>
-	uintreg Map< TKey, TValue >::findPositionIndex( const TKey& key ) const
+	uintsize Map< TKey, TValue >::findPositionIndex( const TKey& key ) const
 	{
 		if( m_length == 0u )
 		{
@@ -302,13 +309,13 @@ namespace tiki
 			}
 		}
 
-		return uintreg( rangeStart );
+		return uintsize( rangeStart );
 	}
 
 	template<typename TKey, typename TValue>
-	uintreg Map< TKey, TValue >::getNextCapacity( uintreg neededCapacity )
+	uintsize Map< TKey, TValue >::getNextCapacity( uintsize neededCapacity )
 	{
-		uintreg capacity = TIKI_MAX( 2u, m_capacity );
+		uintsize capacity = TIKI_MAX( 2u, m_capacity );
 		while( capacity <= neededCapacity )
 		{
 			capacity *= 2;
@@ -318,17 +325,17 @@ namespace tiki
 	}
 
 	template<typename TKey, typename TValue>
-	void Map< TKey, TValue >::checkCapacity( uintreg neededCapacity )
+	void Map< TKey, TValue >::checkCapacity( uintsize neededCapacity )
 	{
 		if( m_capacity >= neededCapacity )
 		{
 			return;
 		}
 
-		const uintreg capacity = getNextCapacity( neededCapacity );
+		const uintsize capacity = getNextCapacity( neededCapacity );
 		PairType* pNewData = new PairType[ capacity ];
 
-		for( uintreg i = 0u; i < m_length; ++i )
+		for( uintsize i = 0u; i < m_length; ++i )
 		{
 			pNewData[ i ] = m_pData[ i ];
 		}

@@ -1,10 +1,12 @@
 #pragma once
 
+#include "tiki/tiki_dynamic_array.h"
+
 #include "tiki/tiki_string_view.h"
 
 namespace tiki
 {
-	class DynamicString
+	class DynamicString : public DynamicArray< char >
 	{
 	public:
 
@@ -15,19 +17,11 @@ namespace tiki
 		explicit				DynamicString( const char* pString, uintreg stringLength );
 								~DynamicString();
 
-		bool					isEmpty() const { return m_length == 0u;}
-		bool					hasElements() const { return m_length != 0u; }
-
-		uintreg					getLength() const { return m_length; }
-		uintreg					getCapacity() const { return m_capacity; }
-
 		void					assign( const char* string );
 		void					assign( const char* string, size_t length );
 		void					assign( const StringView& string );
 		void					assign( const DynamicString& string );
 
-		void					clear();
-		void					reserve( uintreg size );
 		void					terminate( uintreg newLength );
 
 		uintreg					indexOf( char c, uintreg index = 0u ) const;
@@ -96,21 +90,8 @@ namespace tiki
 		operator				const char*() const;
 		operator				StringView() const;
 
-		char*					begin() { return getBegin(); }
-		const char*				begin() const { return getBegin(); }
-		char*					end() { return getEnd(); }
-		const char*				end() const { return getEnd(); }
-
 		static DynamicString	format( const char* format, ... );
 		static DynamicString	formatArgs( const char* format, va_list args );
-
-	private:
-
-		char*					m_string	= nullptr;
-		uintreg					m_capacity	= 0u;
-		uintreg					m_length	= 0u;
-
-		void					checkCapacity( uintreg size );
 	};
 
 	DynamicString operator ""_s( const char* pString, uintreg length );

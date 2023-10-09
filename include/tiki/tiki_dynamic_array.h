@@ -17,38 +17,38 @@ namespace tiki
 						DynamicArray( const std::initializer_list< T >& initList );
 						~DynamicArray();
 
-		uintreg			getCapacity() const;
+		uintsize		getCapacity() const;
 
 		void			clear();
-		void			reserve( uintreg capacity );
-		void			setLengthValue( uintreg size, T value );
-		void			setLengthUninitialized( uintreg size );
+		void			reserve( uintsize capacity );
+		void			setLengthValue( uintsize size, T value );
+		void			setLengthUninitialized( uintsize size );
 
-		T&				insert( uintreg index );
-		void			insert( const T& value, uintreg index );
+		T&				insert( uintsize index );
+		void			insert( const T& value, uintsize index );
 
 		T&				pushBack();
 		void			pushBack( const T& value );
 		void			pushRange( const DynamicArray< T >& vector );
 		void			pushRange( const ArrayView< T >& arrayView );
-		void			pushRange( const T* pData, uintreg length );
+		void			pushRange( const T* pData, uintsize length );
 
 		void			popBack();
 
 		void			eraseSorted( const T& value );
 		void			eraseSorted( const T* pValue );
-		void			eraseSortedByIndex( uintreg index );
+		void			eraseSortedByIndex( uintsize index );
 		void			eraseUnsorted( const T& value );
 		void			eraseUnsorted( const T* pValue );
-		void			eraseUnsortedByIndex( uintreg index );
+		void			eraseUnsortedByIndex( uintsize index );
 
 		DynamicArray&	operator=( const DynamicArray& rhs );
 
-	private:
+	protected:
 
-		uintreg			m_capacity;
+		uintsize		m_capacity;
 
-		void			checkCapacity( uintreg capacity );
+		void			checkCapacity( uintsize capacity );
 	};
 }
 

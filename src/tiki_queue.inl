@@ -1,25 +1,25 @@
 #pragma once
 
-#include "tiki_functions.h"
+#include "tiki/tiki_functions.h"
 
 namespace tiki
 {
 	template< class T >
 	Queue< T >::Queue()
-		: m_pData( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
+		: m_data( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
 	{
 	}
 
 	template< class T >
 	Queue< T >::Queue( const Queue& rhs )
-		: m_pData( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
+		: m_data( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
 	{
 		*this = rhs;
 	}
 
 	template< class T >
 	Queue< T >::Queue( const std::initializer_list< T >& initList )
-		: m_pData( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
+		: m_data( nullptr ), m_top( 0u ), m_bottom( 0u ), m_length( 0u ), m_capacity( 0u )
 	{
 		pushRange( initList.begin(), initList.size() );
 	}
@@ -27,7 +27,7 @@ namespace tiki
 	template< class T >
 	Queue< T >::~Queue()
 	{
-		delete[] m_pData;
+		delete[] m_data;
 	}
 
 	template< class T >
@@ -37,13 +37,13 @@ namespace tiki
 	}
 
 	template< class T >
-	uintreg Queue< T >::getLength() const
+	uintsize Queue< T >::getLength() const
 	{
 		return m_length;
 	}
 
 	template< class T >
-	uintreg Queue< T >::getCapacity() const
+	uintsize Queue< T >::getCapacity() const
 	{
 		return m_capacity;
 	}
@@ -57,7 +57,7 @@ namespace tiki
 	}
 
 	template< class T >
-	void Queue< T >::reserve( uintreg size )
+	void Queue< T >::reserve( uintsize size )
 	{
 		checkCapacity( size );
 	}
@@ -67,7 +67,7 @@ namespace tiki
 	{
 		checkCapacity( m_length + 1u );
 
-		const uintreg index = m_bottom;
+		const uintsize index = m_bottom;
 		m_bottom = ( m_bottom + 1u ) % m_capacity;
 		m_length++;
 		return m_pData[ index ];
@@ -78,7 +78,7 @@ namespace tiki
 	{
 		checkCapacity( m_length + 1u );
 
-		const uintreg index = m_bottom;
+		const uintsize index = m_bottom;
 		m_bottom = ( m_bottom + 1u ) % m_capacity;
 		m_length++;
 		m_pData[ index ] = value;
@@ -97,12 +97,12 @@ namespace tiki
 	}
 
 	template< class T >
-	void Queue<T>::pushRange( const T* pData, uintreg length )
+	void Queue<T>::pushRange( const T* pData, uintsize length )
 	{
 		checkCapacity( m_length + length );
-		for( uintreg i = 0u; i < length; ++i )
+		for( uintsize i = 0u; i < length; ++i )
 		{
-			const uintreg index = m_bottom;
+			const uintsize index = m_bottom;
 			m_bottom = ( m_bottom + 1u ) % m_capacity;
 			m_pData[ index ] = pData[ i ];
 		}
@@ -146,16 +146,16 @@ namespace tiki
 	}
 
 	template< class T >
-	T& Queue<T>::operator[]( uintreg index )
+	T& Queue<T>::operator[]( uintsize index )
 	{
-		const uintreg queueIndex = (m_top + index) % m_capacity;
+		const uintsize queueIndex = (m_top + index) % m_capacity;
 		return m_pData[ queueIndex ];
 	}
 
 	template< class T >
-	const T& Queue<T>::operator[]( uintreg index ) const
+	const T& Queue<T>::operator[]( uintsize index ) const
 	{
-		const uintreg queueIndex = (m_top + index) % m_capacity;
+		const uintsize queueIndex = (m_top + index) % m_capacity;
 		return m_pData[ queueIndex ];
 	}
 
@@ -165,7 +165,7 @@ namespace tiki
 		clear();
 		checkCapacity( rhs.m_length );
 
-		for( uintreg i = 0u; i < rhs.m_length; ++i )
+		for( uintsize i = 0u; i < rhs.m_length; ++i )
 		{
 			m_pData[ i ] = rhs[ i ];
 		}
@@ -178,9 +178,9 @@ namespace tiki
 	}
 
 	template< class T >
-	void Queue< T >::checkCapacity( uintreg capacity )
+	void Queue< T >::checkCapacity( uintsize capacity )
 	{
-		const uintreg nextCapacity = getNextPowerOfTwo( capacity );
+		const uintsize nextCapacity = getNextPowerOfTwo( capacity );
 		if( nextCapacity <= m_capacity )
 		{
 			return;
@@ -189,7 +189,7 @@ namespace tiki
 		T* pNewData = new T[ nextCapacity ];
 		TIKI_ASSERT( pNewData != nullptr );
 
-		for( uintreg i = 0u; i < m_length; ++i )
+		for( uintsize i = 0u; i < m_length; ++i )
 		{
 			pNewData[ i ] = (*this)[ i ];
 		}

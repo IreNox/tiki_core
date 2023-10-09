@@ -3,55 +3,56 @@
 namespace tiki
 {
 	template< class TEnum, class TStorage >
-	FlagsBase<TEnum, TStorage>::FlagsBase()
+	FlagsBase< TEnum, TStorage >::FlagsBase()
 	{
 		clear();
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase<TEnum, TStorage>::FlagsBase( TEnum value )
+	FlagsBase< TEnum, TStorage >::FlagsBase( TEnum value )
 	{
-		m_flags = ( TStorage )value;
+		m_flags = 1 << TStorage( value );
 	}
 
 	template< class TEnum, class TStorage >
-	void FlagsBase<TEnum, TStorage>::clear()
+	void FlagsBase< TEnum, TStorage >::clear()
 	{
 		m_flags = 0;
 	}
 
 	template< class TEnum, class TStorage >
-	bool FlagsBase<TEnum, TStorage>::isEmpty() const
+	bool FlagsBase< TEnum, TStorage >::isEmpty() const
 	{
 		return m_flags == 0;
 	}
 
 	template< class TEnum, class TStorage >
-	bool FlagsBase<TEnum, TStorage>::isAnySet() const
+	bool FlagsBase< TEnum, TStorage >::isAnySet() const
 	{
 		return m_flags != 0;
 	}
 
 	template< class TEnum, class TStorage >
-	bool FlagsBase<TEnum, TStorage>::isSet( TEnum value ) const
+	bool FlagsBase< TEnum, TStorage >::isSet( TEnum value ) const
 	{
+		const TStorage valueFlkag = 1 << TStorage( value );
 		return ( m_flags & value ) == value;
 	}
 
 	template< class TEnum, class TStorage >
-	void FlagsBase<TEnum, TStorage>::set( TEnum value )
+	void FlagsBase< TEnum, TStorage >::set( TEnum value )
 	{
-		m_flags |= ( TStorage )value;
+		m_flags |= 1 << TStorage( value );
 	}
 
 	template< class TEnum, class TStorage >
-	void FlagsBase<TEnum, TStorage>::unset( TEnum value )
+	void FlagsBase< TEnum, TStorage >::unset( TEnum value )
 	{
-		m_flags &= ~( TStorage )value;
+		m_flags &= ~(1 << TStorage( value ));
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase< TEnum, TStorage > FlagsBase<TEnum, TStorage>::operator~() const
+	FlagsBase< TEnum, TStorage > FlagsBase< TEnum, TStorage >::operator~() const
 	{
 		FlagsBase result;
 		result.m_flags = ~m_flags;
@@ -59,7 +60,7 @@ namespace tiki
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase< TEnum, TStorage > FlagsBase<TEnum, TStorage>::operator|( const FlagsBase& rhs ) const
+	FlagsBase< TEnum, TStorage > FlagsBase< TEnum, TStorage >::operator|( const FlagsBase& rhs ) const
 	{
 		FlagsBase result;
 		result.m_flags = ( m_flags | rhs.m_flags );
@@ -67,7 +68,7 @@ namespace tiki
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase< TEnum, TStorage > FlagsBase<TEnum, TStorage>::operator&( const FlagsBase& rhs ) const
+	FlagsBase< TEnum, TStorage > FlagsBase< TEnum, TStorage >::operator&( const FlagsBase& rhs ) const
 	{
 		FlagsBase result;
 		result.m_flags = ( m_flags & rhs.m_flags );
@@ -75,27 +76,27 @@ namespace tiki
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase< TEnum, TStorage >& FlagsBase<TEnum, TStorage>::operator|=( const FlagsBase& rhs )
+	FlagsBase< TEnum, TStorage >& FlagsBase< TEnum, TStorage >::operator|=( const FlagsBase& rhs )
 	{
 		m_flags |= rhs.m_flags;
 		return *this;
 	}
 
 	template< class TEnum, class TStorage >
-	FlagsBase< TEnum, TStorage >& FlagsBase<TEnum, TStorage>::operator&=( const FlagsBase& rhs )
+	FlagsBase< TEnum, TStorage >& FlagsBase< TEnum, TStorage >::operator&=( const FlagsBase& rhs )
 	{
 		m_flags &= rhs.m_flags;
 		return *this;
 	}
 
 	template< class TEnum, class TStorage >
-	bool FlagsBase<TEnum, TStorage>::operator==( const FlagsBase& rhs ) const
+	bool FlagsBase< TEnum, TStorage >::operator==( const FlagsBase& rhs ) const
 	{
 		return m_flags == rhs.m_flags;
 	}
 
 	template< class TEnum, class TStorage >
-	bool FlagsBase<TEnum, TStorage>::operator!=( const FlagsBase& rhs ) const
+	bool FlagsBase< TEnum, TStorage >::operator!=( const FlagsBase& rhs ) const
 	{
 		return m_flags != rhs.m_flags;
 	}

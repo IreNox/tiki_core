@@ -26,11 +26,11 @@ namespace tiki
 	template< class T >
 	DynamicArray< T >::~DynamicArray()
 	{
-		delete[] this->m_pData;
+		delete[] this->m_data;
 	}
 
 	template< class T >
-	uintreg DynamicArray< T >::getCapacity() const
+	uintsize DynamicArray< T >::getCapacity() const
 	{
 		return m_capacity;
 	}
@@ -42,40 +42,40 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::reserve( uintreg capacity )
+	void DynamicArray< T >::reserve( uintsize capacity )
 	{
 		checkCapacity( capacity );
 	}
 
 	template< class T >
-	void DynamicArray< T >::setLengthValue( uintreg size, T value )
+	void DynamicArray< T >::setLengthValue( uintsize size, T value )
 	{
 		checkCapacity( size );
 
-		for( uintreg i = this->m_length; i < size; ++i )
+		for( uintsize i = this->m_length; i < size; ++i )
 		{
-			this->m_pData[ i ] = value;
+			this->m_data[ i ] = value;
 		}
 
 		this->m_length = size;
 	}
 
 	template< class T >
-	void DynamicArray<T>::setLengthUninitialized( uintreg size )
+	void DynamicArray<T>::setLengthUninitialized( uintsize size )
 	{
 		checkCapacity( size );
 		this->m_length = size;
 	}
 
 	template< class T >
-	T& DynamicArray< T >::insert( uintreg index )
+	T& DynamicArray< T >::insert( uintsize index )
 	{
 		TIKI_ASSERT( index <= this->m_length );
 		checkCapacity( this->m_length + 1u );
 
 		if( index < this->m_length )
 		{
-			for( uintreg i = this->m_length; i > index; --i )
+			for( uintsize i = this->m_length; i > index; --i )
 			{
 				this->m_pData[ i ] = this->m_pData[ i - 1u ];
 			}
@@ -87,7 +87,7 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::insert( const T& value, uintreg index )
+	void DynamicArray< T >::insert( const T& value, uintsize index )
 	{
 		T& target = insert( index );
 		target = value;
@@ -97,14 +97,14 @@ namespace tiki
 	T& DynamicArray< T >::pushBack()
 	{
 		checkCapacity( this->m_length + 1u );
-		return this->m_pData[ this->m_length++ ];
+		return this->m_data[ this->m_length++ ];
 	}
 
 	template< class T >
 	void DynamicArray< T >::pushBack( const T& value )
 	{
 		checkCapacity( this->m_length + 1u );
-		this->m_pData[ this->m_length++ ] = value;
+		this->m_data[ this->m_length++ ] = value;
 	}
 
 	template< class T >
@@ -120,12 +120,12 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::pushRange( const T* pData, uintreg length )
+	void DynamicArray< T >::pushRange( const T* pData, uintsize length )
 	{
 		checkCapacity( this->m_length + length );
-		for( uintreg i = 0u; i < length; ++i )
+		for( uintsize i = 0u; i < length; ++i )
 		{
-			this->m_pData[ this->m_length++ ] = pData[ i ];
+			this->m_data[ this->m_length++ ] = pData[ i ];
 		}
 	}
 
@@ -150,10 +150,10 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseSortedByIndex( uintreg index )
+	void DynamicArray< T >::eraseSortedByIndex( uintsize index )
 	{
 		this->m_length--;
-		for( uintreg i = index; i < this->m_length; ++i )
+		for( uintsize i = index; i < this->m_length; ++i )
 		{
 			this->m_pData[ i ] = this->m_pData[ i + 1u ];
 		}
@@ -173,7 +173,7 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseUnsortedByIndex( uintreg index )
+	void DynamicArray< T >::eraseUnsortedByIndex( uintsize index )
 	{
 		this->m_length--;
 		if( index != this->m_length )
@@ -191,9 +191,9 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::checkCapacity( uintreg capacity )
+	void DynamicArray< T >::checkCapacity( uintsize capacity )
 	{
-		const uintreg nextCapacity = getNextPowerOfTwo( capacity );
+		const uintsize nextCapacity = getNextPowerOfTwo( capacity );
 		if( nextCapacity <= m_capacity )
 		{
 			return;
@@ -202,13 +202,13 @@ namespace tiki
 		T* pNewData = new T[ nextCapacity ];
 		TIKI_ASSERT( pNewData != nullptr );
 
-		for( uintreg i = 0u; i < this->m_length; ++i )
+		for( uintsize i = 0u; i < this->m_length; ++i )
 		{
-			pNewData[ i ] = this->m_pData[ i ];
+			pNewData[ i ] = this->m_data[ i ];
 		}
 
-		delete[] this->m_pData;
-		this->m_pData = pNewData;
+		delete[] this->m_data;
+		this->m_data = pNewData;
 		m_capacity = nextCapacity;
 	}
 }

@@ -27,6 +27,8 @@ namespace tiki
 	typedef int			sint;
 	typedef unsigned	uint;
 
+	typedef uint8		byte;
+
 #if TIKI_ENABLED( TIKI_POINTER_16 )
 	typedef uint16		uintptr;
 	TIKI_STATIC_ASSERT( sizeof( void* ) == 2u );

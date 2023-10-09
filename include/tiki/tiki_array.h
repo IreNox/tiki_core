@@ -10,40 +10,42 @@ namespace tiki
 	public:
 
 						Array();
-						Array( T* pData, uintreg length );
+						Array( T* data, uintsize length );
 
-		bool			isSet() const		{ return m_pData != nullptr; }
+		bool			isSet() const		{ return m_data != nullptr; }
 		bool			isEmpty() const		{ return m_length == 0u; }
 		bool			hasElements() const	{ return m_length != 0u; }
-		uintreg			getLength() const	{ return m_length; }
+		uintsize		getLength() const	{ return m_length; }
 
-		T*				getData()			{ return m_pData; }
-		const T*		getData() const		{ return m_pData; }
+		T*				getData()			{ return m_data; }
+		const T*		getData() const		{ return m_data; }
 
-		T*				getBegin()			{ return m_pData; }
-		const T*		getBegin() const	{ return m_pData; }
-		T*				getEnd()			{ return m_pData + m_length; }
-		const T*		getEnd() const		{ return m_pData + m_length; }
+		T*				getBegin()			{ return m_data; }
+		const T*		getBegin() const	{ return m_data; }
+		T*				getEnd()			{ return m_data + m_length; }
+		const T*		getEnd() const		{ return m_data + m_length; }
 
 		T&				getFront();
 		const T&		getFront() const;
 		T&				getBack();
 		const T&		getBack() const;
 
-		T&				getElement( uintreg index );
-		const T&		getElement( uintreg index ) const;
-		T&				getReverseElement( uintreg index );
-		const T&		getReverseElement( uintreg index ) const;
+		T&				getElement( uintsize index );
+		const T&		getElement( uintsize index ) const;
+		T&				getReverseElement( uintsize index );
+		const T&		getReverseElement( uintsize index ) const;
 
 		ArrayView< T >	toView() const;
 
-		T&				operator[]( uintreg index );
-		const T&		operator[]( uintreg index ) const;
+		operator		ArrayView< T >() const;
+
+		T&				operator[]( uintsize index );
+		const T&		operator[]( uintsize index ) const;
 
 	protected:
 
-		T*				m_pData;
-		uintreg			m_length;
+		T*				m_data;
+		uintsize		m_length;
 	};
 
 	template< class T > T* begin( Array< T >& arr ) { return arr.getBegin(); }

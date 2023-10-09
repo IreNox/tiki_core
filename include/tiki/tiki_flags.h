@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tiki_core.h"
+#include "tiki/tiki_types.h"
 
 namespace tiki
 {
@@ -49,4 +49,4 @@ namespace tiki
 	using Flags64 = FlagsBase< TEnum, uint64 >;
 }
 
-#include "tiki_flags.inl"
+#include "tiki/../../src/tiki_flags.inl"
