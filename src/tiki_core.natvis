@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="tiki::StringView">
+		<DisplayString>{m_data,s}</DisplayString>
+		<Expand>
+			<Item Name="[pointer]" ExcludeView="simple">m_data</Item>
+			<Item Name="[length]" ExcludeView="simple">m_length</Item>
+			<ArrayItems>
+				<Size>m_length</Size>
+				<ValuePointer>m_data</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
 	<Type Name="tiki::DynamicString">
 		<DisplayString>{m_data,s}</DisplayString>
 		<Expand>

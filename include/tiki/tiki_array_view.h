@@ -10,9 +10,9 @@ namespace tiki
 	public:
 
 					ArrayView();
-					ArrayView( const T* pData, uintsize length );
+					ArrayView( const T* data, uintsize length );
 
-		void		set( const T* pData, uintsize length );
+		void		set( const T* data, uintsize length );
 
 		bool		isSet() const { return m_data != nullptr; }
 		uintsize	getLength() const { return m_length; }

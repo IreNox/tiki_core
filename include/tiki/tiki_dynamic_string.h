@@ -25,21 +25,23 @@ namespace tiki
 		void					terminate( uintreg newLength );
 
 		uintreg					indexOf( char c, uintreg index = 0u ) const;
-		uintreg					indexOf( const DynamicString& str, uintreg index = 0u ) const;
+		uintreg					indexOf( const StringView& str, uintreg index = 0u ) const;
 
 		uintreg					lastIndexOf( char c, uintreg index = InvalidIndex ) const;
-		uintreg					lastIndexOf( const DynamicString& str, uintreg index = InvalidIndex ) const;
+		uintreg					lastIndexOf( const StringView& str, uintreg index = InvalidIndex ) const;
 
 		bool					contains( char c ) const;
-		bool					contains( const DynamicString& str ) const;
+		bool					contains( const StringView& str ) const;
 
 		bool					startsWith( char c ) const;
-		bool					startsWith( const DynamicString& str ) const;
+		bool					startsWith( const StringView& str ) const;
+		bool					startsWithNoCase( const StringView& str ) const;
 
 		bool					endsWith( char c ) const;
-		bool					endsWith( const DynamicString& str ) const;
+		bool					endsWith( const StringView& str ) const;
+		bool					endsWithNoCase( const StringView& str ) const;
 
-		uintreg					countSubstring( const DynamicString& substr ) const;
+		uintreg					countSubstring( const StringView& substr ) const;
 
 		DynamicString			trim() const;
 		DynamicString			toLower() const;

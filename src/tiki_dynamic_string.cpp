@@ -25,13 +25,13 @@ namespace tiki
 
 	DynamicString::DynamicString( const char* pString )
 	{
-		const uintreg stringLength = strlen( pString );
+		const uintsize stringLength = strlen( pString );
 		checkCapacity( stringLength + 1u );
 		memcpy( m_data, pString, stringLength );
 		terminate( stringLength );
 	}
 
-	DynamicString::DynamicString( const char* pString, uintreg stringLength )
+	DynamicString::DynamicString( const char* pString, uintsize stringLength )
 	{
 		TIKI_ASSERT( strlen( pString ) >= stringLength );
 
@@ -71,18 +71,18 @@ namespace tiki
 		terminate( string.m_length );
 	}
 
-	void DynamicString::terminate( uintreg newLength )
+	void DynamicString::terminate( uintsize newLength )
 	{
 		TIKI_ASSERT( newLength < m_capacity );
 		m_length = newLength;
 		m_data[ m_length ] = '\0';
 	}
 
-	uintreg DynamicString::indexOf( char c, uintreg index /*= 0u*/ ) const
+	uintsize DynamicString::indexOf( char c, uintsize index /*= 0u*/ ) const
 	{
 		TIKI_ASSERT( index < m_length );
 
-		uintreg i = index;
+		uintsize i = index;
 		while( i < m_length )
 		{
 			if( m_data[ i ] == c )
@@ -95,20 +95,20 @@ namespace tiki
 		return InvalidIndex;
 	}
 
-	uintreg DynamicString::indexOf( const DynamicString& str, uintreg index /*= 0u*/ ) const
+	uintsize DynamicString::indexOf( const StringView& str, uintsize index /*= 0u*/ ) const
 	{
-		if( str.m_length > m_length ) return InvalidIndex;
+		if( str.getLength() > m_length ) return InvalidIndex;
 
-		uintreg i = index;
-		uintreg c = m_length - str.m_length;
+		uintsize i = index;
+		uintsize c = m_length - str.getLength();
 
 		do
 		{
-			uintreg b = 0;
+			uintsize b = 0;
 			bool found = true;
-			while( b < str.m_length )
+			while( b < str.getLength() )
 			{
-				if( m_data[ i + b ] != str.m_data[ b ] )
+				if( m_data[ i + b ] != str[ b ] )
 				{
 					found = false;
 					break;
@@ -127,7 +127,7 @@ namespace tiki
 		return InvalidIndex;
 	}
 
-	uintreg DynamicString::lastIndexOf( char c, uintreg index /*= InvalidIndex*/ ) const
+	uintsize DynamicString::lastIndexOf( char c, uintsize index /*= InvalidIndex*/ ) const
 	{
 		index = TIKI_MIN( index, m_length - 1u );
 		while( index < m_length )
@@ -143,16 +143,16 @@ namespace tiki
 		return InvalidIndex;
 	}
 
-	uintreg DynamicString::lastIndexOf( const DynamicString& str, uintreg index /*= InvalidIndex*/ ) const
+	uintsize DynamicString::lastIndexOf( const StringView& str, uintsize index /*= InvalidIndex*/ ) const
 	{
 		index = TIKI_MIN( index, m_length - 1u );
 		while( index < m_length )
 		{
-			uintreg b = 0;
+			uintsize b = 0;
 			bool found = true;
-			while( b < str.m_length )
+			while( b < str.getLength() )
 			{
-				if( m_data[ index + b ] != str.m_data[ b ] )
+				if( m_data[ index + b ] != str[ b ] )
 				{
 					found = false;
 					break;
@@ -177,26 +177,55 @@ namespace tiki
 		return indexOf( c ) != InvalidIndex;
 	}
 
-	bool DynamicString::contains( const DynamicString& str ) const
+	bool DynamicString::contains( const StringView& str ) const
 	{
 		return indexOf( str ) != InvalidIndex;
 	}
 
 	bool DynamicString::startsWith( char c ) const
 	{
-		if( m_length < 1 ) return false;
+		if( m_length < 1 )
+		{
+			return false;
+		}
 
 		return m_data[ 0 ] == c;
 	}
 
-	bool DynamicString::startsWith( const DynamicString& str ) const
+	bool DynamicString::startsWith( const StringView& str ) const
 	{
-		if( m_length < str.m_length ) return false;
-
-		uintreg i = 0;
-		while( i < str.m_length )
+		if( m_length < str.getLength() )
 		{
-			if( m_data[ i ] != str.m_data[ i ] ) return false;
+			return false;
+		}
+
+		uintsize i = 0;
+		while( i < str.getLength() )
+		{
+			if( m_data[ i ] != str[ i ] )
+			{
+				return false;
+			}
+			i++;
+		}
+
+		return true;
+	}
+
+	bool DynamicString::startsWithNoCase( const StringView& str ) const
+	{
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
+
+		uintsize i = 0;
+		while( i < str.getLength() )
+		{
+			if( !ascii::isEqualsNoCase( m_data[ i ], str[ i ] ) )
+			{
+				return false;
+			}
 			i++;
 		}
 
@@ -205,20 +234,29 @@ namespace tiki
 
 	bool DynamicString::endsWith( char c ) const
 	{
-		if( m_length < 1 ) return false;
+		if( m_length < 1 )
+		{
+			return false;
+		}
 
 		return m_data[ m_length - 1 ] == c;
 	}
 
-	bool DynamicString::endsWith( const DynamicString& str ) const
+	bool DynamicString::endsWith( const StringView& str ) const
 	{
-		if( m_length < str.m_length ) return false;
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
 
-		uintreg b = 0;
-		uintreg i = m_length - str.m_length;
+		uintsize b = 0;
+		uintsize i = m_length - str.getLength();
 		while( i < m_length )
 		{
-			if( m_data[ i ] != str.m_data[ b ] ) return false;
+			if( m_data[ i ] != str[ b ] )
+			{
+				return false;
+			}
 			i++;
 			b++;
 		}
@@ -226,20 +264,44 @@ namespace tiki
 		return true;
 	}
 
-	uintreg DynamicString::countSubstring( const DynamicString& substr ) const
+	bool DynamicString::endsWithNoCase( const StringView& str ) const
 	{
-		if( substr.m_length > m_length )
-			return 0u;
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
 
-		uintreg index = 0;
-		uintreg count = 0;
+		uintsize b = 0;
+		uintsize i = m_length - str.getLength();
+		while( i < m_length )
+		{
+			if( ascii::isEqualsNoCase( m_data[ i ], str[ b ] ) )
+			{
+				return false;
+			}
+			i++;
+			b++;
+		}
+
+		return true;
+	}
+
+	uintsize DynamicString::countSubstring( const StringView& substr ) const
+	{
+		if( substr.getLength() > m_length )
+		{
+			return 0u;
+		}
+
+		uintsize index = 0;
+		uintsize count = 0;
 		while( index < m_length )
 		{
-			uintreg b = 0;
+			uintsize b = 0;
 			bool found = true;
-			while( b < substr.m_length )
+			while( b < substr.getLength() )
 			{
-				if( m_data[ index + b ] != substr.m_data[ b ] )
+				if( m_data[ index + b ] != substr[ b ] )
 				{
 					found = false;
 					break;
@@ -250,7 +312,7 @@ namespace tiki
 			if( found )
 			{
 				count++;
-				index += substr.m_length;
+				index += substr.getLength();
 			}
 			else
 			{
@@ -263,13 +325,13 @@ namespace tiki
 
 	DynamicString DynamicString::trim() const
 	{
-		uintreg startIndex = 0u;
+		uintsize startIndex = 0u;
 		while( ascii::isWhitespace( m_data[ startIndex ] ) && startIndex < getLength() )
 		{
 			startIndex++;
 		}
 
-		uintreg endIndex = getLength();
+		uintsize endIndex = getLength();
 		while( ascii::isWhitespace( m_data[ endIndex ] ) && endIndex > 0u )
 		{
 			endIndex--;
@@ -281,7 +343,7 @@ namespace tiki
 	DynamicString DynamicString::toLower() const
 	{
 		DynamicString result = *this;
-		for( uintreg i = 0u; i < result.getLength(); ++i )
+		for( uintsize i = 0u; i < result.getLength(); ++i )
 		{
 			result[ i ] = ascii::toLower( result[ i ] );
 		}
@@ -292,7 +354,7 @@ namespace tiki
 	DynamicString DynamicString::toUpper() const
 	{
 		DynamicString result = *this;
-		for( uintreg i = 0u; i < result.getLength(); ++i )
+		for( uintsize i = 0u; i < result.getLength(); ++i )
 		{
 			result[ i ] = ascii::toUpper( result[ i ] );
 		}
@@ -300,13 +362,13 @@ namespace tiki
 		return result;
 	}
 
-	DynamicString DynamicString::subString( uintreg startIndex ) const
+	DynamicString DynamicString::subString( uintsize startIndex ) const
 	{
 		TIKI_ASSERT( startIndex <= m_length );
 		return DynamicString( m_data + startIndex, m_length - startIndex );
 	}
 
-	DynamicString DynamicString::subString( uintreg startIndex, uintreg length ) const
+	DynamicString DynamicString::subString( uintsize startIndex, uintsize length ) const
 	{
 		TIKI_ASSERT( startIndex + length <= m_length );
 		return DynamicString( m_data + startIndex, length );
@@ -315,7 +377,7 @@ namespace tiki
 	DynamicString DynamicString::replace( char oldChar, char newChar ) const
 	{
 		DynamicString result = *this;
-		for( uintreg i = 0u; i < m_length; ++i )
+		for( uintsize i = 0u; i < m_length; ++i )
 		{
 			if( result[ i ] == oldChar )
 			{
@@ -328,8 +390,8 @@ namespace tiki
 
 	DynamicString DynamicString::replace( const DynamicString& oldString, const DynamicString& newString ) const
 	{
-		const uintreg count = countSubstring( oldString );
-		const uintreg length = m_length - ( count * oldString.m_length ) + ( count * newString.m_length );
+		const uintsize count = countSubstring( oldString );
+		const uintsize length = m_length - ( count * oldString.m_length ) + ( count * newString.m_length );
 
 		if( count == 0 )
 		{
@@ -339,13 +401,13 @@ namespace tiki
 		DynamicString result;
 		result.checkCapacity( length + 1u );
 
-		uintreg i = 0;
-		uintreg offsetOld = 0;
-		uintreg offsetNew = 0;
+		uintsize i = 0;
+		uintsize offsetOld = 0;
+		uintsize offsetNew = 0;
 		while( i < count )
 		{
-			const uintreg index			= indexOf( oldString, offsetOld );
-			const uintreg oldDifferent	= index - offsetOld;
+			const uintsize index			= indexOf( oldString, offsetOld );
+			const uintsize oldDifferent	= index - offsetOld;
 
 			memcpy( result.m_data + offsetNew, m_data + offsetOld, index - offsetOld );
 			offsetOld += oldDifferent;
@@ -364,7 +426,7 @@ namespace tiki
 		return result;
 	}
 
-	DynamicString DynamicString::insert( char c, uintreg index ) const
+	DynamicString DynamicString::insert( char c, uintsize index ) const
 	{
 		TIKI_ASSERT( index <= m_length );
 
@@ -379,7 +441,7 @@ namespace tiki
 		return result;
 	}
 
-	DynamicString DynamicString::erase( uintreg index ) const
+	DynamicString DynamicString::erase( uintsize index ) const
 	{
 		TIKI_ASSERT( index <= m_length );
 		TIKI_ASSERT( m_length > 0u );
@@ -419,9 +481,9 @@ namespace tiki
 		return m_data;
 	}
 
-	void DynamicString::endWrite( uintreg newLength /*= (uintreg)-1 */ )
+	void DynamicString::endWrite( uintsize newLength /*= (uintsize)-1 */ )
 	{
-		if( newLength == (uintreg)-1 )
+		if( newLength == (uintsize)-1 )
 		{
 			newLength = strlen( m_data );
 		}
@@ -454,13 +516,13 @@ namespace tiki
 		return m_data + m_length;
 	}
 
-	char& DynamicString::operator[]( uintreg index )
+	char& DynamicString::operator[]( uintsize index )
 	{
 		TIKI_ASSERT( index < m_length );
 		return m_data[ index ];
 	}
 
-	const char& DynamicString::operator[]( uintreg index ) const
+	const char& DynamicString::operator[]( uintsize index ) const
 	{
 		TIKI_ASSERT( index < m_length );
 		return m_data[ index ];
@@ -486,7 +548,7 @@ namespace tiki
 
 	DynamicString& DynamicString::operator+=( const char* pString )
 	{
-		const uintreg stringLength = strlen( pString );
+		const uintsize stringLength = strlen( pString );
 
 		checkCapacity( m_length + stringLength + 1u );
 		memcpy( m_data + m_length, pString, stringLength );
@@ -515,7 +577,7 @@ namespace tiki
 
 	DynamicString DynamicString::operator+( const char* pString ) const
 	{
-		const uintreg stringLength = strlen( pString );
+		const uintsize stringLength = strlen( pString );
 
 		DynamicString result;
 		result.checkCapacity( m_length + stringLength + 1u );
@@ -583,7 +645,7 @@ namespace tiki
 		return StringView( m_data, m_length );
 	}
 
-	DynamicString operator ""_s( const char* string, uintreg length )
+	DynamicString operator ""_s( const char* string, uintsize length )
 	{
 		return DynamicString( string, length );
 	}

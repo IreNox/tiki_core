@@ -101,6 +101,10 @@ namespace tiki
 		{
 			slashIndex = 0u;
 		}
+		else
+		{
+			slashIndex++;
+		}
 
 		uintreg dotIndex = m_path.lastIndexOf( '.' );
 		if( dotIndex == InvalidIndex )

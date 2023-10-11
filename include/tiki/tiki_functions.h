@@ -8,101 +8,149 @@
 
 namespace tiki
 {
-	template<typename T>
-	TIKI_FORCE_INLINE T min( T a, T b )
+	template< typename T >
+	inline T min( T a, T b )
 	{
 		return a < b ? a : b;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T max( T a, T b )
+	template< typename T >
+	inline T max( T a, T b )
 	{
 		return a > b ? a : b;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T* addPointer( T* pPtr, uintreg byteCountToAdd )
+	template< typename T >
+	inline T* addPointer( T* pPtr, uintsize byteCountToAdd )
 	{
-		return static_cast< T* >( ( void* )( ( uint8* )pPtr + byteCountToAdd ) );
+		return static_cast< T* >( (void*)((uint8*)pPtr + byteCountToAdd) );
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE const T* addPointer( const T* pPtr, uintreg byteCountToAdd )
+	template< typename T >
+	inline const T* addPointer( const T* pPtr, uintsize byteCountToAdd )
 	{
-		return static_cast< const T* >( ( const void* )( ( const uint8* )pPtr + byteCountToAdd ) );
+		return static_cast< const T* >( (const void*)( (const uint8*)pPtr + byteCountToAdd ) );
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T* addPointerCast( void* pPtr, uintreg byteCountToAdd )
+	template< typename T >
+	inline T* addPointerCast( void* pPtr, uintsize byteCountToAdd )
 	{
 		return static_cast< T* >( static_cast< void* >( static_cast< uint8* >( pPtr ) + byteCountToAdd ) );
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE const T* addPointerCast( const void* pPtr, uintreg byteCountToAdd )
+	template< typename T >
+	inline const T* addPointerCast( const void* pPtr, uintsize byteCountToAdd )
 	{
 		return static_cast< const T* >( static_cast< const void* >( static_cast< const uint8* >( pPtr ) + byteCountToAdd ) );
 	}
 
-	TIKI_FORCE_INLINE bool isBitSet( uint32 bitMask, uint32 flag )
+	inline bool isBitSet32( uint32 bitMask, uint32 flag )
 	{
-		return ( bitMask & flag ) == flag;
+		return (bitMask & flag) == flag;
 	}
 
-	TIKI_FORCE_INLINE bool isBitSet64( uint64 bitMask, uint64 flag )
+	inline bool isBitSet64( uint64 bitMask, uint64 flag )
 	{
-		return ( bitMask & flag ) == flag;
+		return (bitMask & flag) == flag;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE bool isPowerOfTwo( T x )
+	template< typename T >
+	inline bool isPowerOfTwo( T x )
 	{
 		return ( x & ( x - 1 ) ) == 0;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T alignValue( T value, T alignment )
+	template< typename T >
+	inline T alignValue( T value, T alignment )
 	{
 		TIKI_ASSERT( alignment > 0 );
 		TIKI_ASSERT( isPowerOfTwo( alignment ) );
 		return ( value + alignment - 1 ) & ( 0 - alignment );
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE bool isValueAligned( T value, T alignment )
+	template< typename T >
+	inline bool isValueAligned( T value, T alignment )
 	{
 		return ( value % alignment ) == 0;
 	}
 
-	TIKI_FORCE_INLINE bool isPointerAligned( const void* value, uintreg alignment )
+	inline bool isPointerAligned( const void* value, uintsize alignment )
 	{
 		return ( uintptr( value ) % alignment ) == 0;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T* alignPointer( T* pPtr, uintreg alignment )
+	template< typename T >
+	inline T* alignPointer( T* pPtr, uintsize alignment )
 	{
-		return ( T* )alignValue< uintreg >( uintptr( pPtr ), alignment );
+		return ( T* )alignValue< uintsize >( uintptr( pPtr ), alignment );
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE const T* alignPointer( const T* pPtr, uintreg alignment )
+	template< typename T >
+	inline const T* alignPointer( const T* pPtr, uintsize alignment )
 	{
-		return ( const T* )alignValue< uintreg >( uintptr( pPtr ), alignment );
+		return ( const T* )alignValue< uintsize >( uintptr( pPtr ), alignment );
 	}
 
-	TIKI_FORCE_INLINE uintreg countPopulation64( uint64 w )
+	inline uintsize countPopulation32( uint32 value )
 	{
-		uint64 w1 = (w & 0x2222222222222222) + ((w + w) & 0x2222222222222222);
-		uint64 w2 = (w >> 1 & 0x2222222222222222) + (w >> 2 & 0x2222222222222222);
+#if TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
+		return (uintsize)__builtin_popcount( value )
+#elif TIKI_ENABLED( TIKI_COMPILER_MSVC )
+		return __popcnt( value );
+#else
+		uint32 i = value - ((value >> 1) & 0x55555555);
+		i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
+		i = (i + (i >> 4)) & 0x0f0f0f0f;
+		i *= 0x01010101;
+		return  i >> 24;
+#endif
+	}
+
+	inline uintsize countPopulation64( uint64 value )
+	{
+#if TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
+		return (uintsize)__builtin_popcountll( value )
+#elif TIKI_ENABLED( TIKI_COMPILER_MSVC )
+		return __popcnt64( value );
+#else
+		uint64 w1 = (value & 0x2222222222222222) + ((value + value) & 0x2222222222222222);
+		uint64 w2 = (value >> 1 & 0x2222222222222222) + (value >> 2 & 0x2222222222222222);
 		w1 = (w1 + (w1 >> 4)) & 0x0f0f0f0f0f0f0f0f;
 		w2 = (w2 + (w2 >> 4)) & 0x0f0f0f0f0f0f0f0f;
 		return (w1 + w2) * 0x0101010101010101 >> 57;
+#endif
 	}
 
-	TIKI_FORCE_INLINE uintreg countLeadingZeros64( uint64 value )
+	inline uintsize countLeadingZeros32( uint32 value )
 	{
-#if TIKI_ENABLED( TIKI_COMPILER_MSVC ) && TIKI_ENABLED( TIKI_REGISTER_64 )
+#if TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
+		return __builtin_clz( value );
+#elif TIKI_ENABLED( TIKI_COMPILER_MSVC )
+		unsigned long result = 0u;
+		if( _BitScanReverse( &result, value ) )
+		{
+			return 31u - result;
+		}
+		else
+		{
+			return 32u;
+		}
+#else
+		uint32 x = value;
+		x |= (x >> 1);
+		x |= (x >> 2);
+		x |= (x >> 4);
+		x |= (x >> 8);
+		x |= (x >> 16);
+		return 32u - countPopulation32( x );
+#endif
+	}
+
+	inline uintsize countLeadingZeros64( uint64 value )
+	{
+#if TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
+		return __builtin_clzll( value );
+#elif TIKI_ENABLED( TIKI_COMPILER_MSVC ) && TIKI_ENABLED( TIKI_REGISTER_64 )
 		unsigned long result = 0u;
 		if( _BitScanReverse64( &result, value ) )
 		{
@@ -120,25 +168,25 @@ namespace tiki
 		x |= ( x >> 8 );
 		x |= ( x >> 16 );
 		x |= ( x >> 32 );
-		return ( 64u - countPopulation64( x ) );
+		return 64u - countPopulation64( x );
 #endif
 	}
 
 	template<class T>
-	TIKI_FORCE_INLINE T clamp( T value, T min, T max )
+	inline T clamp( T value, T min, T max )
 	{
-		return ( value < min ? min : value > max ? max : value );
+		return value < min ? min : value > max ? max : value;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE T getNextPowerOfTwo( T value )
+	template< typename T >
+	inline T getNextPowerOfTwo( T value )
 	{
-		const T shift = ( T )( 64u - countLeadingZeros64( value - 1 ) );
+		const T shift = (T)( 64u - countLeadingZeros64( value - 1 ) );
 		return T( 1 ) << shift;
 	}
 
 	template<typename TTarget, typename TSource>
-	TIKI_FORCE_INLINE bool rangeCheckCast( TTarget& outValue, const TSource& value )
+	inline bool rangeCheckCast( TTarget& outValue, const TSource& value )
 	{
 		if( NumberLimits< TSource >::isSigned() && !NumberLimits< TTarget >::isSigned() && value < 0 )
 		{
@@ -158,8 +206,8 @@ namespace tiki
 		return true;
 	}
 
-	template<typename T>
-	TIKI_FORCE_INLINE void swap( T& value1, T& value2 )
+	template< typename T >
+	inline void swap( T& value1, T& value2 )
 	{
 		T backup = value1;
 		value1 = value2;

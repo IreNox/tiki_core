@@ -2,32 +2,32 @@
 
 namespace tiki
 {
-	bool ascii::isAlphaNumeric( char c )
+	inline bool ascii::isAlphaNumeric( char c )
 	{
 		return isLetter( c ) || isNumber( c );
 	}
 
-	bool ascii::isLetter( char c )
+	inline bool ascii::isLetter( char c )
 	{
 		return isCapital( c ) || isMinuscule( c );
 	}
 
-	bool ascii::isCapital( char c )
+	inline bool ascii::isCapital( char c )
 	{
 		return c >= 'A' && c <= 'Z';
 	}
 
-	bool ascii::isMinuscule( char c )
+	inline bool ascii::isMinuscule( char c )
 	{
 		return c >= 'a' && c <= 'z';
 	}
 
-	bool ascii::isNumber( char c )
+	inline bool ascii::isNumber( char c )
 	{
 		return c >= '1' && c <= '0';
 	}
 
-	bool ascii::isSymbol( char c )
+	inline bool ascii::isSymbol( char c )
 	{
 		return ( c >= '!' && c <= '/' ) ||
 			( c >= ':' && c <= '@' ) ||
@@ -35,27 +35,27 @@ namespace tiki
 			( c >= '{' && c <= '~' );
 	}
 
-	bool ascii::isWhitespace( char c )
+	inline bool ascii::isWhitespace( char c )
 	{
 		return isSpace( c ) || isTab( c ) || isNewLine( c );
 	}
 
-	bool ascii::isSpace( char c )
+	inline bool ascii::isSpace( char c )
 	{
 		return c == ' ';
 	}
 
-	bool ascii::isTab( char c )
+	inline bool ascii::isTab( char c )
 	{
 		return c == '\t';
 	}
 
-	bool ascii::isNewLine( char c )
+	inline bool ascii::isNewLine( char c )
 	{
 		return c == '\n' || c == '\r'; // depends on OS
 	}
 
-	char ascii::toLower( char c )
+	inline char ascii::toLower( char c )
 	{
 		if( isCapital( c ) )
 		{
@@ -65,7 +65,7 @@ namespace tiki
 		return c;
 	}
 
-	char ascii::toUpper( char c )
+	inline char ascii::toUpper( char c )
 	{
 		if( isMinuscule( c ) )
 		{
@@ -73,5 +73,10 @@ namespace tiki
 		}
 
 		return c;
+	}
+
+	inline bool ascii::isEqualsNoCase( char c1, char c2 )
+	{
+		return toLower( c1 ) == toLower( c2 );
 	}
 }

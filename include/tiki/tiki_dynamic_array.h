@@ -28,7 +28,7 @@ namespace tiki
 		void			insert( const T& value, uintsize index );
 
 		T&				pushBack();
-		void			pushBack( const T& value );
+		T&				pushBack( const T& value );
 		void			pushRange( const DynamicArray< T >& vector );
 		void			pushRange( const ArrayView< T >& arrayView );
 		void			pushRange( const T* pData, uintsize length );

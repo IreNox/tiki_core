@@ -101,10 +101,14 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::pushBack( const T& value )
+	T& DynamicArray< T >::pushBack( const T& value )
 	{
 		checkCapacity( this->m_length + 1u );
-		this->m_data[ this->m_length++ ] = value;
+
+		T& newValue = this->m_data[ this->m_length++ ];
+		newValue = value;
+
+		return newValue;
 	}
 
 	template< class T >
