@@ -1,46 +1,55 @@
 #pragma once
 
-#include "tiki_core.h"
-#include "tiki_array_view.h"
+#include "tiki/tiki_array_view.h"
+
+#include <initializer_list>
 
 namespace tiki
 {
-	template< class T, uintreg TSize >
+	template< class T, uintsize TSize >
 	class StaticArray
 	{
 	public:
 
-						StaticArray();
+								StaticArray();
+								StaticArray( const std::initializer_list< T >& initList );
 
-		uintreg			getLength() const;
+		inline uintsize			getLength() const;
 
-		T*				getData();
-		const T*		getData() const;
+		inline T*				getData();
+		inline const T*			getData() const;
 
-		T*				getBegin();
-		const T*		getBegin() const;
-		T*				getEnd();
-		const T*		getEnd() const;
+		inline T*				getBegin();
+		inline const T*			getBegin() const;
+		inline T*				getEnd();
+		inline const T*			getEnd() const;
 
-		T&				getFront();
-		const T&		getFront() const;
-		T&				getBack();
-		const T&		getBack() const;
+		inline T&				getFront();
+		inline const T&			getFront() const;
+		inline T&				getBack();
+		inline const T&			getBack() const;
 
-		ArrayView< T >	toArrayView() const;
+		inline T&				getElement( uintsize index );
+		inline const T&			getElement( uintsize index ) const;
+		inline T&				getReverseElement( uintsize index );
+		inline const T&			getReverseElement( uintsize index ) const;
 
-		T&				operator[]( uintreg index );
-		const T&		operator[]( uintreg index ) const;
+		inline ArrayView< T >	toView() const;
 
-		T*				begin() { return getBegin(); }
-		const T*		begin() const { return getBegin(); }
-		T*				end() { return getEnd(); }
-		const T*		end() const { return getEnd(); }
+		inline operator			ArrayView< T >() const;
+
+		inline T&				operator[]( uintsize index );
+		inline const T&			operator[]( uintsize index ) const;
 
 	private:
 
-		T			m_aData[ TSize ];
+		T						m_data[ TSize ];
 	};
+
+	template< class T, uintsize TSize > inline T* begin( StaticArray< T, TSize >& arr ) { return arr.getBegin(); }
+	template< class T, uintsize TSize > inline T* end( StaticArray< T, TSize >& arr ) { return arr.getEnd(); }
+	template< class T, uintsize TSize > inline const T* begin( const StaticArray< T, TSize >& arr ) { return arr.getBegin(); }
+	template< class T, uintsize TSize > inline const T* end( const StaticArray< T, TSize >& arr ) { return arr.getEnd(); }
 }
 
-#include "tiki_static_array.inl"
+#include "tiki/../../src/tiki_static_array.inl"

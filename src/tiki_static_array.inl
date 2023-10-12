@@ -2,95 +2,141 @@
 
 namespace tiki
 {
-	template< class T, uintreg TSize >
+	template< class T, uintsize TSize >
 	StaticArray< T, TSize >::StaticArray()
 	{
 		TIKI_STATIC_ASSERT( TSize > 0u );
 	}
 
-	template< class T, uintreg TSize >
-	uintreg StaticArray<T, TSize>::getLength() const
+	template< class T, uintsize TSize >
+	StaticArray< T, TSize >::StaticArray( const std::initializer_list< T >& initList )
+	{
+		TIKI_ASSERT( initList.size() <= TSize );
+
+		const T* initValue = initList.begin();
+		for( uintsize i = 0; i < initList.size(); ++i )
+		{
+			m_data[ i ] = initValue[ i ];
+		}
+	}
+
+	template< class T, uintsize TSize >
+	inline uintsize StaticArray< T, TSize >::getLength() const
 	{
 		return TSize;
 	}
 
-	template< class T, uintreg TSize >
-	T* StaticArray<T, TSize>::getData()
+	template< class T, uintsize TSize >
+	inline T* StaticArray< T, TSize >::getData()
 	{
-		return m_aData;
+		return m_data;
 	}
 
-	template< class T, uintreg TSize >
-	const T* StaticArray<T, TSize>::getData() const
+	template< class T, uintsize TSize >
+	inline const T* StaticArray< T, TSize >::getData() const
 	{
-		return m_aData;
+		return m_data;
 	}
 
-	template< class T, uintreg TSize >
-	T* StaticArray<T, TSize>::getBegin()
+	template< class T, uintsize TSize >
+	inline T* StaticArray< T, TSize >::getBegin()
 	{
-		return m_aData;
+		return m_data;
 	}
 
-	template< class T, uintreg TSize >
-	const T* StaticArray<T, TSize>::getBegin() const
+	template< class T, uintsize TSize >
+	inline const T* StaticArray< T, TSize >::getBegin() const
 	{
-		return m_aData;
+		return m_data;
 	}
 
-	template< class T, uintreg TSize >
-	T* StaticArray<T, TSize>::getEnd()
+	template< class T, uintsize TSize >
+	inline T* StaticArray< T, TSize >::getEnd()
 	{
-		return m_aData + TSize;
+		return m_data + TSize;
 	}
 
-	template< class T, uintreg TSize >
-	const T* StaticArray<T, TSize>::getEnd() const
+	template< class T, uintsize TSize >
+	inline const T* StaticArray< T, TSize >::getEnd() const
 	{
-		return m_aData + TSize;
+		return m_data + TSize;
 	}
 
-	template< class T, uintreg TSize >
-	T& StaticArray<T, TSize>::getFront()
+	template< class T, uintsize TSize >
+	inline T& StaticArray< T, TSize >::getFront()
 	{
-		return m_aData[ 0u ];
+		return m_data[ 0u ];
 	}
 
-	template< class T, uintreg TSize >
-	const T& StaticArray<T, TSize>::getFront() const
+	template< class T, uintsize TSize >
+	inline const T& StaticArray< T, TSize >::getFront() const
 	{
-		return m_aData[ 0u ];
+		return m_data[ 0u ];
 	}
 
-	template< class T, uintreg TSize >
-	T& StaticArray<T, TSize>::getBack()
+	template< class T, uintsize TSize >
+	inline T& StaticArray< T, TSize >::getBack()
 	{
-		return m_aData[TSize - 1u];
+		return m_data[ TSize - 1u ];
 	}
 
-	template< class T, uintreg TSize >
-	const T& StaticArray<T, TSize>::getBack() const
+	template< class T, uintsize TSize >
+	inline const T& StaticArray< T, TSize >::getBack() const
 	{
-		return m_aData[ TSize - 1u ];
+		return m_data[ TSize - 1u ];
 	}
 
-	template< class T, uintreg TSize >
-	ArrayView< T > StaticArray<T, TSize>::toArrayView() const
+	template< class T, uintsize TSize >
+	inline T& StaticArray<T, TSize>::getElement( uintsize index )
 	{
-		return ArrayView< T >( m_aData, TSize );
+		TIKI_ASSERT( index < TSize );
+		return m_data[ index ];
 	}
 
-	template< class T, uintreg TSize >
-	T& StaticArray< T, TSize >::operator[]( uintreg index )
+	template< class T, uintsize TSize >
+	inline const T& StaticArray<T, TSize>::getElement( uintsize index ) const
+	{
+		TIKI_ASSERT( index < TSize );
+		return m_data[ index ];
+	}
+
+	template< class T, uintsize TSize >
+	inline T& StaticArray<T, TSize>::getReverseElement( uintsize index )
+	{
+		TIKI_ASSERT( index < m_length );
+		return m_pData[ (m_length - 1u) - index ];
+	}
+
+	template< class T, uintsize TSize >
+	inline const T& StaticArray<T, TSize>::getReverseElement( uintsize index ) const
+	{
+		TIKI_ASSERT( index < m_length );
+		return m_pData[ (m_length - 1u) - index ];
+	}
+
+	template< class T, uintsize TSize >
+	inline ArrayView< T > StaticArray< T, TSize >::toView() const
+	{
+		return ArrayView< T >( m_data, TSize );
+	}
+
+	template< class T, uintsize TSize >
+	inline StaticArray< T, TSize >::operator ArrayView< T >() const
+	{
+		return toView();
+	}
+
+	template< class T, uintsize TSize >
+	inline T& StaticArray< T, TSize >::operator[]( uintsize index )
 	{
 		TIKI_ASSERT( index < TSize);
-		return m_aData[ index ];
+		return m_data[ index ];
 	}
 
-	template< class T, uintreg TSize >
-	const T& StaticArray< T, TSize >::operator[]( uintreg index ) const
+	template< class T, uintsize TSize >
+	inline const T& StaticArray< T, TSize >::operator[]( uintsize index ) const
 	{
 		TIKI_ASSERT( index < TSize);
-		return m_aData[ index ];
+		return m_data[ index ];
 	}
 }

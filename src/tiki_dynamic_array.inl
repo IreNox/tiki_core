@@ -4,21 +4,17 @@ namespace tiki
 {
 	template< class T >
 	DynamicArray< T >::DynamicArray()
-		: m_capacity( 0u )
 	{
 	}
 
 	template< class T >
-	DynamicArray< T >::DynamicArray( const DynamicArray& rhs )
-		: Array< T >()
-		, m_capacity( 0u )
+	DynamicArray< T >::DynamicArray( const ArrayView< T >& rhs )
 	{
-		*this = rhs;
+		pushRange( rhs.getData(), rhs.getLength() );
 	}
 
 	template< class T >
 	DynamicArray< T >::DynamicArray( const std::initializer_list< T >& initList )
-		: m_capacity( 0u )
 	{
 		pushRange( initList.begin(), initList.size() );
 	}
@@ -30,25 +26,25 @@ namespace tiki
 	}
 
 	template< class T >
-	uintsize DynamicArray< T >::getCapacity() const
+	inline uintsize DynamicArray< T >::getCapacity() const
 	{
 		return m_capacity;
 	}
 
 	template< class T >
-	void DynamicArray< T >::clear()
+	inline void DynamicArray< T >::clear()
 	{
 		this->m_length = 0u;
 	}
 
 	template< class T >
-	void DynamicArray< T >::reserve( uintsize capacity )
+	inline void DynamicArray< T >::reserve( uintsize capacity )
 	{
 		checkCapacity( capacity );
 	}
 
 	template< class T >
-	void DynamicArray< T >::setLengthValue( uintsize size, T value )
+	inline void DynamicArray< T >::setLengthValue( uintsize size, T value )
 	{
 		checkCapacity( size );
 
@@ -61,14 +57,14 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray<T>::setLengthUninitialized( uintsize size )
+	inline void DynamicArray< T >::setLengthUninitialized( uintsize size )
 	{
 		checkCapacity( size );
 		this->m_length = size;
 	}
 
 	template< class T >
-	T& DynamicArray< T >::insert( uintsize index )
+	inline T& DynamicArray< T >::insert( uintsize index )
 	{
 		TIKI_ASSERT( index <= this->m_length );
 		checkCapacity( this->m_length + 1u );
@@ -87,21 +83,21 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::insert( const T& value, uintsize index )
+	inline void DynamicArray< T >::insert( const T& value, uintsize index )
 	{
 		T& target = insert( index );
 		target = value;
 	}
 
 	template< class T >
-	T& DynamicArray< T >::pushBack()
+	inline T& DynamicArray< T >::pushBack()
 	{
 		checkCapacity( this->m_length + 1u );
 		return this->m_data[ this->m_length++ ];
 	}
 
 	template< class T >
-	T& DynamicArray< T >::pushBack( const T& value )
+	inline T& DynamicArray< T >::pushBack( const T& value )
 	{
 		checkCapacity( this->m_length + 1u );
 
@@ -112,19 +108,13 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::pushRange( const DynamicArray< T >& vector )
-	{
-		pushRange( vector.getData(), vector.getLength() );
-	}
-
-	template< class T >
-	void DynamicArray< T >::pushRange( const ArrayView< T >& arrayView )
+	inline void DynamicArray< T >::pushRange( const ArrayView< T >& arrayView )
 	{
 		pushRange( arrayView.getData(), arrayView.getLength() );
 	}
 
 	template< class T >
-	void DynamicArray< T >::pushRange( const T* pData, uintsize length )
+	inline void DynamicArray< T >::pushRange( const T* pData, uintsize length )
 	{
 		checkCapacity( this->m_length + length );
 		for( uintsize i = 0u; i < length; ++i )
@@ -134,20 +124,20 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::popBack()
+	inline void DynamicArray< T >::popBack()
 	{
 		TIKI_ASSERT( this->m_length > 0u );
 		this->m_length--;
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseSorted( const T& value )
+	inline void DynamicArray< T >::eraseSorted( const T& value )
 	{
 		eraseSorted( &value );
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseSorted( const T* pValue )
+	inline void DynamicArray< T >::eraseSorted( const T* pValue )
 	{
 		TIKI_ASSERT( pValue >= this->m_pData && pValue < this->m_pData + this->m_length );
 		eraseSortedByIndex( pValue - this->m_pData );
@@ -164,20 +154,20 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseUnsorted( const T& value )
+	inline void DynamicArray< T >::eraseUnsorted( const T& value )
 	{
 		eraseUnsorted( &value );
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseUnsorted( const T* pValue )
+	inline void DynamicArray< T >::eraseUnsorted( const T* pValue )
 	{
 		TIKI_ASSERT( pValue >= this->m_pData && pValue < this->m_pData + this->m_length );
 		eraseUnsortedByIndex( pValue - this->m_pData );
 	}
 
 	template< class T >
-	void DynamicArray< T >::eraseUnsortedByIndex( uintsize index )
+	inline void DynamicArray< T >::eraseUnsortedByIndex( uintsize index )
 	{
 		this->m_length--;
 		if( index != this->m_length )
@@ -187,7 +177,7 @@ namespace tiki
 	}
 
 	template< class T >
-	DynamicArray< T >& DynamicArray< T >::operator=( const DynamicArray& rhs )
+	inline DynamicArray< T >& DynamicArray< T >::operator=( const DynamicArray& rhs )
 	{
 		clear();
 		pushRange( rhs.getData(), rhs.getLength() );
