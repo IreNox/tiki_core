@@ -8,6 +8,12 @@
 
 namespace tiki
 {
+	namespace string_tools
+	{
+		static bool parseHexNibbleInternal( uint8& target, char c );
+		static bool parseHexInternal( uint64& target, const StringView& string, uintsize maxLength );
+	}
+
 	DynamicString string_tools::toString( sint8 value )
 	{
 		char buffer[ 64u ];
@@ -240,24 +246,85 @@ namespace tiki
 		return (uint64)atoll( string.getData() );
 	}
 
-	uint8 string_tools::parseUInt8Hex( const StringView& string )
+	static bool string_tools::parseHexNibbleInternal( uint8& target, char c )
 	{
-		return (uint8)strtoll( string.getData(), nullptr, 16 );
+		if( c >= '0' && c <= '9' )
+		{
+			target = c - '0';
+			return true;
+		}
+		else if( c >= 'a' && c <= 'f' )
+		{
+			target = (c - 'a') + 10u;
+			return true;
+		}
+		else if( c >= 'A' && c <= 'F' )
+		{
+			target = (c - 'A') + 10u;
+			return true;
+		}
+
+		return false;
 	}
 
-	uint16 string_tools::parseUInt16Hex( const StringView& string )
+	static bool string_tools::parseHexInternal( uint64& target, const StringView& string, uintsize maxLength )
 	{
-		return (uint16)strtoll( string.getData(), nullptr, 16 );
+		target = 0u;
+
+		uint8 nibble;
+		const uintsize length = min( string.getLength(), maxLength );
+		for( uintsize i = 0u; i < length; ++i )
+		{
+			if( !parseHexNibbleInternal( nibble, string[ i ] ) )
+			{
+				return false;
+			}
+
+			target <<= 4u;
+			target += nibble;
+		}
+
+		return true;
 	}
 
-	uint32 string_tools::parseUInt32Hex( const StringView& string )
+	uint8 string_tools::parseHexNibble( const StringView& string )
 	{
-		return (uint32)strtoll( string.getData(), nullptr, 16 );
+		if( string.isEmpty() )
+		{
+			return 0u;
+		}
+
+		uint8 value = 0u;
+		parseHexNibbleInternal( value, string[ 0u ] );
+		return value;
 	}
 
-	uint64 string_tools::parseUInt64Hex( const StringView& string )
+	uint8 string_tools::parseHexUInt8( const StringView& string )
 	{
-		return (uint64)strtoll( string.getData(), nullptr, 16 );
+		uint64 value;
+		parseHexInternal( value, string, 2u );
+		return (uint8)value;
+	}
+
+	uint16 string_tools::parseHexUInt16( const StringView& string )
+	{
+		uint64 value;
+		parseHexInternal( value, string, 4u );
+		return (uint16)value;
+	}
+
+	uint32 string_tools::parseHexUInt32( const StringView& string )
+	{
+		uint64 value;
+		parseHexInternal( value, string, 8u );
+		return (uint32)value;
+	}
+
+	uint64 string_tools::parseHexUInt64( const StringView& string )
+	{
+		uint64 value;
+		parseHexInternal( value, string, 16u );
+		return value;
 	}
 
 	float string_tools::parseFloat( const StringView& string )
@@ -272,9 +339,9 @@ namespace tiki
 
 	bool string_tools::tryParseSInt8( sint8& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const sint64 result = strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const sint64 result = strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -284,9 +351,9 @@ namespace tiki
 
 	bool string_tools::tryParseSInt16( sint16& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const sint64 result = strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const sint64 result = strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -296,9 +363,9 @@ namespace tiki
 
 	bool string_tools::tryParseSInt32( sint32& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const sint64 result = strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const sint64 result = strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -308,9 +375,9 @@ namespace tiki
 
 	bool string_tools::tryParseSInt64( sint64& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const sint64 result = strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const sint64 result = strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -320,9 +387,9 @@ namespace tiki
 
 	bool string_tools::tryParseUInt8( uint8& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const uint64 result = (uint64)strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -332,9 +399,9 @@ namespace tiki
 
 	bool string_tools::tryParseUInt16( uint16& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const uint64 result = (uint64)strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -344,9 +411,9 @@ namespace tiki
 
 	bool string_tools::tryParseUInt32( uint32& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const uint64 result = (uint64)strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -356,9 +423,9 @@ namespace tiki
 
 	bool string_tools::tryParseUInt64( uint64& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 10 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		char* end = nullptr;
+		const uint64 result = (uint64)strtoll( string.getData(), &end, 10 );
+		if( end == string.getData() || !rangeCheckCast( target, result ) )
 		{
 			return false;
 		}
@@ -366,59 +433,69 @@ namespace tiki
 		return true;
 	}
 
-	bool string_tools::tryParseUInt8Hex( uint8& target, const StringView& string )
+	bool string_tools::tryParseHexNibble( uint8& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 16 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		if( string.isEmpty() )
 		{
 			return false;
 		}
 
+		return parseHexNibbleInternal( target, string[ 0u ] );
+	}
+
+	bool string_tools::tryParseHexUInt8( uint8& target, const StringView& string )
+	{
+		uint64 result;
+		if( !parseHexInternal( result, string, 2u ) )
+		{
+			return false;
+		}
+
+		target = (uint8)result;
 		return true;
 	}
 
-	bool string_tools::tryParseUInt16Hex( uint16& target, const StringView& string )
+	bool string_tools::tryParseHexUInt16( uint16& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 16 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		uint64 result;
+		if( !parseHexInternal( result, string, 4u ) )
 		{
 			return false;
 		}
 
+		target = (uint16)result;
 		return true;
 	}
 
-	bool string_tools::tryParseUInt32Hex( uint32& target, const StringView& string )
+	bool string_tools::tryParseHexUInt32( uint32& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 16 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		uint64 result;
+		if( !parseHexInternal( result, string, 8u ) )
 		{
 			return false;
 		}
 
+		target = (uint32)result;
 		return true;
 	}
 
-	bool string_tools::tryParseUInt64Hex( uint64& target, const StringView& string )
+	bool string_tools::tryParseHexUInt64( uint64& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const uint64 result = (uint64)strtoll( string.getData(), &pEnd, 16 );
-		if( pEnd == string.getData() || !rangeCheckCast( target, result ) )
+		uint64 result;
+		if( !parseHexInternal( result, string, 16u ) )
 		{
 			return false;
 		}
 
+		target = result;
 		return true;
 	}
 
 	bool string_tools::tryParseFloat( float& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const double result = strtof( string.getData(), &pEnd );
-		if( pEnd == string.getData() || pEnd == string.getData() )
+		char* end = nullptr;
+		const double result = strtof( string.getData(), &end );
+		if( end == string.getData() )
 		{
 			return false;
 		}
@@ -429,9 +506,9 @@ namespace tiki
 
 	bool string_tools::tryParseDouble( double& target, const StringView& string )
 	{
-		char* pEnd = nullptr;
-		const double result = strtof( string.getData(), &pEnd );
-		if( pEnd == string.getData() || pEnd == string.getData() )
+		char* end = nullptr;
+		const double result = strtof( string.getData(), &end );
+		if( end == string.getData() )
 		{
 			return false;
 		}

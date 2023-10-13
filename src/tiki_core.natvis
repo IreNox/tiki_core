@@ -32,7 +32,17 @@
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
 			<ArrayItems>
 				<Size>m_length</Size>
-				<ValuePointer>m_pData</ValuePointer>
+				<ValuePointer>m_data</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="tiki::ArrayView&lt;*&gt;">
+		<DisplayString>{{ length={m_length} }}</DisplayString>
+		<Expand>
+			<Item Name="[length]" ExcludeView="simple">m_length</Item>
+			<ArrayItems>
+				<Size>m_length</Size>
+				<ValuePointer>m_data</ValuePointer>
 			</ArrayItems>
 		</Expand>
 	</Type>
@@ -43,7 +53,17 @@
 			<Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
 			<ArrayItems>
 				<Size>m_length</Size>
-				<ValuePointer>m_pData</ValuePointer>
+				<ValuePointer>m_data</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="tiki::StaticArray&lt;*, *&gt;">
+		<DisplayString>{{ length={$T2} }}</DisplayString>
+		<Expand>
+			<Item Name="[length]" ExcludeView="simple">$T2</Item>
+			<ArrayItems>
+				<Size>$T2</Size>
+				<ValuePointer>m_data</ValuePointer>
 			</ArrayItems>
 		</Expand>
 	</Type>

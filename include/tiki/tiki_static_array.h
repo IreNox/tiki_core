@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tiki/tiki_array.h"
 #include "tiki/tiki_array_view.h"
 
 #include <initializer_list>
@@ -11,8 +12,8 @@ namespace tiki
 	{
 	public:
 
-								StaticArray();
-								StaticArray( const std::initializer_list< T >& initList );
+		inline					StaticArray();
+		inline					StaticArray( const std::initializer_list< T >& initList );
 
 		inline uintsize			getLength() const;
 
@@ -34,8 +35,10 @@ namespace tiki
 		inline T&				getReverseElement( uintsize index );
 		inline const T&			getReverseElement( uintsize index ) const;
 
+		inline Array< T >		toArray();
 		inline ArrayView< T >	toView() const;
 
+		inline operator			Array< T >();
 		inline operator			ArrayView< T >() const;
 
 		inline T&				operator[]( uintsize index );

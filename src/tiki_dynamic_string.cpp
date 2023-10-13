@@ -52,6 +52,12 @@ namespace tiki
 
 	void DynamicString::assign( const char* string, size_t length )
 	{
+		if( length == 0u )
+		{
+			m_length = 0u;
+			return;
+		}
+
 		checkCapacity( length + 1u );
 		memcpy( m_data, string, length );
 		terminate( length );
@@ -59,16 +65,12 @@ namespace tiki
 
 	void DynamicString::assign( const StringView& string )
 	{
-		checkCapacity( string.getLength() + 1u );
-		memcpy( m_data, string.getData(), string.getLength() );
-		terminate( string.getLength() );
+		assign( string.getData(), string.getLength() );
 	}
 
 	void DynamicString::assign( const DynamicString& string )
 	{
-		checkCapacity( string.m_length + 1u );
-		memcpy( m_data, string.m_data, string.m_length );
-		terminate( string.m_length );
+		assign( string.m_data, string.m_length );
 	}
 
 	void DynamicString::terminate( uintsize newLength )
@@ -493,6 +495,11 @@ namespace tiki
 
 	const char* DynamicString::toConstCharPointer() const
 	{
+		if( m_length == 0u )
+		{
+			return "";
+		}
+
 		return m_data;
 	}
 
@@ -610,29 +617,84 @@ namespace tiki
 		return result;
 	}
 
+	bool DynamicString::operator==( const char* rhs ) const
+	{
+		if( rhs == nullptr )
+		{
+			return m_length == 0u;
+		}
+		else if( m_data == nullptr )
+		{
+			return *rhs == '\0';
+		}
+
+		return strcmp( m_data, rhs ) == 0;
+	}
+
+	bool DynamicString::operator==( const StringView& rhs ) const
+	{
+		if( m_length != rhs.getLength() )
+		{
+			return false;
+		}
+		else if( m_data == nullptr || rhs.getData() == nullptr )
+		{
+			return m_length == 0u;
+		}
+
+		return strcmp( m_data, rhs.getData() ) == 0;
+	}
+
 	bool DynamicString::operator==( const DynamicString& rhs ) const
 	{
 		if( m_length != rhs.m_length )
 		{
 			return false;
 		}
+		else if( m_data == nullptr || rhs.getData() == nullptr )
+		{
+			return m_length == 0u;
+		}
 
 		return strcmp( m_data, rhs.m_data ) == 0;
 	}
 
-	bool DynamicString::operator==( const char* string ) const
+	bool DynamicString::operator!=( const char* rhs ) const
 	{
-		return strcmp( m_data, string ) == 0;
+		if( m_data == nullptr || rhs == nullptr )
+		{
+			return m_length != 0u && m_data != rhs;
+		}
+
+		return strcmp( m_data, rhs ) != 0;
+	}
+
+	bool DynamicString::operator!=( const StringView& rhs ) const
+	{
+		if( m_length != rhs.getLength() )
+		{
+			return true;
+		}
+		else if( m_data == nullptr || rhs.getData() == nullptr )
+		{
+			return m_length != 0u && m_data != rhs.getData();
+		}
+
+		return strcmp( m_data, rhs.getData() ) != 0;
 	}
 
 	bool DynamicString::operator!=( const DynamicString& rhs ) const
 	{
-		return strcmp( m_data, rhs.m_data ) != 0;
-	}
+		if( m_length != rhs.m_length )
+		{
+			return true;
+		}
+		else if( m_data == nullptr || rhs.getData() == nullptr )
+		{
+			return m_length != 0u && m_data != rhs.getData();
+		}
 
-	bool DynamicString::operator!=( const char* string ) const
-	{
-		return strcmp( m_data, string ) != 0;
+		return strcmp( m_data, rhs.m_data ) != 0;
 	}
 
 	DynamicString::operator const char*() const
@@ -643,6 +705,13 @@ namespace tiki
 	DynamicString::operator StringView() const
 	{
 		return StringView( m_data, m_length );
+	}
+
+	DynamicString operator+( const char* lhs, const DynamicString& rhs )
+	{
+		DynamicString string( lhs );
+		string += rhs;
+		return string;
 	}
 
 	DynamicString operator ""_s( const char* string, uintsize length )

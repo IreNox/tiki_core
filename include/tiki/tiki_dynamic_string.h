@@ -77,8 +77,10 @@ namespace tiki
 		DynamicString&			operator=( const DynamicString& rhs );
 
 		bool					operator==( const char* pString ) const;
+		bool					operator==( const StringView& rhs ) const;
 		bool					operator==( const DynamicString& rhs ) const;
 		bool					operator!=( const char* pString ) const;
+		bool					operator!=( const StringView& rhs ) const;
 		bool					operator!=( const DynamicString& rhs ) const;
 
 		DynamicString&			operator+=( const char* pString );
@@ -95,6 +97,8 @@ namespace tiki
 		static DynamicString	format( const char* format, ... );
 		static DynamicString	formatArgs( const char* format, va_list args );
 	};
+
+	DynamicString				operator+( const char* lhs, const DynamicString& rhs );
 
 	DynamicString operator ""_s( const char* pString, uintsize length );
 }

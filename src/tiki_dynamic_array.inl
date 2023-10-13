@@ -73,13 +73,13 @@ namespace tiki
 		{
 			for( uintsize i = this->m_length; i > index; --i )
 			{
-				this->m_pData[ i ] = this->m_pData[ i - 1u ];
+				this->m_data[ i ] = this->m_data[ i - 1u ];
 			}
 		}
 
 		this->m_length++;
 
-		return this->m_pData[ index ];
+		return this->m_data[ index ];
 	}
 
 	template< class T >
@@ -139,8 +139,8 @@ namespace tiki
 	template< class T >
 	inline void DynamicArray< T >::eraseSorted( const T* pValue )
 	{
-		TIKI_ASSERT( pValue >= this->m_pData && pValue < this->m_pData + this->m_length );
-		eraseSortedByIndex( pValue - this->m_pData );
+		TIKI_ASSERT( pValue >= this->m_data && pValue < this->m_data + this->m_length );
+		eraseSortedByIndex( pValue - this->m_data );
 	}
 
 	template< class T >
@@ -149,7 +149,7 @@ namespace tiki
 		this->m_length--;
 		for( uintsize i = index; i < this->m_length; ++i )
 		{
-			this->m_pData[ i ] = this->m_pData[ i + 1u ];
+			this->m_data[ i ] = this->m_data[ i + 1u ];
 		}
 	}
 
@@ -162,8 +162,8 @@ namespace tiki
 	template< class T >
 	inline void DynamicArray< T >::eraseUnsorted( const T* pValue )
 	{
-		TIKI_ASSERT( pValue >= this->m_pData && pValue < this->m_pData + this->m_length );
-		eraseUnsortedByIndex( pValue - this->m_pData );
+		TIKI_ASSERT( pValue >= this->m_data && pValue < this->m_data + this->m_length );
+		eraseUnsortedByIndex( pValue - this->m_data );
 	}
 
 	template< class T >
@@ -172,7 +172,7 @@ namespace tiki
 		this->m_length--;
 		if( index != this->m_length )
 		{
-			this->m_pData[ index ] = this->m_pData[ this->m_length ];
+			this->m_data[ index ] = this->m_data[ this->m_length ];
 		}
 	}
 

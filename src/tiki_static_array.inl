@@ -3,13 +3,13 @@
 namespace tiki
 {
 	template< class T, uintsize TSize >
-	StaticArray< T, TSize >::StaticArray()
+	inline StaticArray< T, TSize >::StaticArray()
 	{
 		TIKI_STATIC_ASSERT( TSize > 0u );
 	}
 
 	template< class T, uintsize TSize >
-	StaticArray< T, TSize >::StaticArray( const std::initializer_list< T >& initList )
+	inline StaticArray< T, TSize >::StaticArray( const std::initializer_list< T >& initList )
 	{
 		TIKI_ASSERT( initList.size() <= TSize );
 
@@ -115,9 +115,21 @@ namespace tiki
 	}
 
 	template< class T, uintsize TSize >
+	Array< T > StaticArray< T, TSize >::toArray()
+	{
+		return Array< T >( m_data, TSize );
+	}
+
+	template< class T, uintsize TSize >
 	inline ArrayView< T > StaticArray< T, TSize >::toView() const
 	{
 		return ArrayView< T >( m_data, TSize );
+	}
+
+	template< class T, uintsize TSize >
+	inline StaticArray< T, TSize >::operator Array< T >()
+	{
+		return toArray();
 	}
 
 	template< class T, uintsize TSize >

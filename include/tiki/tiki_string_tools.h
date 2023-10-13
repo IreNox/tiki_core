@@ -39,10 +39,11 @@ namespace tiki
 		uint32			parseUInt32( const StringView& string );
 		uint64			parseUInt64( const StringView& string );
 
-		uint8			parseUInt8Hex( const StringView& string );
-		uint16			parseUInt16Hex( const StringView& string );
-		uint32			parseUInt32Hex( const StringView& string );
-		uint64			parseUInt64Hex( const StringView& string );
+		uint8			parseHexNibble( const StringView& string );
+		uint8			parseHexUInt8( const StringView& string );
+		uint16			parseHexUInt16( const StringView& string );
+		uint32			parseHexUInt32( const StringView& string );
+		uint64			parseHexUInt64( const StringView& string );
 
 		float			parseFloat( const StringView& string );
 		double			parseDouble( const StringView& string );
@@ -57,10 +58,11 @@ namespace tiki
 		bool			tryParseUInt32( uint32& target, const StringView& string );
 		bool			tryParseUInt64( uint64& target, const StringView& string );
 
-		bool			tryParseUInt8Hex( uint8& target, const StringView& string );
-		bool			tryParseUInt16Hex( uint16& target, const StringView& string );
-		bool			tryParseUInt32Hex( uint32& target, const StringView& string );
-		bool			tryParseUInt64Hex( uint64& target, const StringView& string );
+		bool			tryParseHexNibble( uint8& target, const StringView& string );
+		bool			tryParseHexUInt8( uint8& target, const StringView& string );
+		bool			tryParseHexUInt16( uint16& target, const StringView& string );
+		bool			tryParseHexUInt32( uint32& target, const StringView& string );
+		bool			tryParseHexUInt64( uint64& target, const StringView& string );
 
 		bool			tryParseFloat( float& target, const StringView& string );
 		bool			tryParseDouble( double& target, const StringView& string );
