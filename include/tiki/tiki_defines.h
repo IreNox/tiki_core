@@ -1,10 +1,10 @@
 #pragma once
 
-#define TIKI_ON 				2
-#define TIKI_OFF				1
+#define TIKI_ON 				1
+#define TIKI_OFF				0
 
-#define TIKI_ENABLED( value )	( ( 0 + value ) == 2 )
-#define TIKI_DISABLED( value )	( ( 0 + value ) != 2 )
+#define TIKI_ENABLED( value )	( ( 1 + value ) == 2 )
+#define TIKI_DISABLED( value )	( ( 1 + value ) != 2 )
 
 #define TIKI_IF( expr )		( ( expr ) ? TIKI_ON : TIKI_OFF )
 
@@ -146,7 +146,7 @@
 #endif
 
 #if !defined( TIKI_DEBUG )
-#	if defined( _DEBUG ) || defined( __DEBUG__ )
+#	if defined( DEBUG ) ||defined( _DEBUG ) || defined( __DEBUG__ )
 #		define TIKI_DEBUG				TIKI_ON
 #	else
 #		define TIKI_DEBUG				TIKI_OFF

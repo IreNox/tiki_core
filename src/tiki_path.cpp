@@ -39,6 +39,11 @@ namespace tiki
 
 	bool Path::isAbsolute() const
 	{
+		if( m_path.isEmpty() )
+		{
+			return false;
+		}
+
 		return m_path[ 0u ] == '/' || m_path[ 1u ] == ':';
 	}
 
