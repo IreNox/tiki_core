@@ -22,7 +22,10 @@ namespace tiki
 		Path			getParent() const;
 
 		Path			push( const Path& path ) const;
-		Path			push( const DynamicString& pathString ) const;
+
+		Path			replaceFilename( const StringView& value ) const;
+		Path			replaceBasename( const StringView& value ) const;
+		Path			replaceExtension( const StringView& value ) const;
 
 		DynamicString	getFilename() const;
 		DynamicString	getBasename() const;

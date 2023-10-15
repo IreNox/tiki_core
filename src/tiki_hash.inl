@@ -1,0 +1,48 @@
+#pragma once
+
+#include "tiki/tiki_hash.h"
+
+namespace tiki
+{
+	inline TikiHash32 calculateHash( const void* data, uintsize dataSize, TikiHash32 seed )
+	{
+		// Murmur3
+		uint32 hash = seed;
+		uint32_t dataPart;
+		const uint8* bytes = (const uint8*)data;
+		for( size_t i = dataSize >> 2; i; --i )
+		{
+			dataPart = *(uint32*)bytes;
+			bytes += sizeof( uint32 );
+
+			uint32 scramble = dataPart * 0xcc9e2d51;
+			scramble = (scramble << 15) | (scramble >> 17);
+			scramble *= 0x1b873593;
+
+			hash ^= scramble;
+			hash = (hash << 13) | (hash >> 19);
+			hash = hash * 5 + 0xe6546b64;
+		}
+
+		dataPart = 0;
+		for( size_t i = dataSize & 3; i; --i )
+		{
+			dataPart <<= 8;
+			dataPart |= bytes[ i - 1 ];
+		}
+
+		uint32 scramble = dataPart * 0xcc9e2d51;
+		scramble = (scramble << 15) | (scramble >> 17);
+		scramble *= 0x1b873593;
+
+		hash ^= scramble;
+		hash ^= dataSize;
+		hash ^= hash >> 16u;
+		hash *= 0x85ebca6b;
+		hash ^= hash >> 13u;
+		hash *= 0xc2b2ae35;
+		hash ^= hash >> 16u;
+
+		return hash;
+	}
+}

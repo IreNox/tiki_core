@@ -366,13 +366,21 @@ namespace tiki
 
 	DynamicString DynamicString::subString( uintsize startIndex ) const
 	{
-		TIKI_ASSERT( startIndex <= m_length );
+		if( startIndex >= m_length )
+		{
+			return DynamicString();
+		}
+
 		return DynamicString( m_data + startIndex, m_length - startIndex );
 	}
 
 	DynamicString DynamicString::subString( uintsize startIndex, uintsize length ) const
 	{
-		TIKI_ASSERT( startIndex + length <= m_length );
+		if( startIndex + length >= m_length )
+		{
+			return DynamicString();
+		}
+
 		return DynamicString( m_data + startIndex, length );
 	}
 
@@ -757,5 +765,11 @@ namespace tiki
 
 		result.terminate( length );
 		return result;
+	}
+
+	template<>
+	TikiHash32 calculateValueHash( const DynamicString& value )
+	{
+		return calculateHash( value.getData(), value.getLength(), 0u );
 	}
 }

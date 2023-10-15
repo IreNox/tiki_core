@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tiki/tiki_hash.h"
 #include "tiki/tiki_dynamic_array.h"
 
 #include "tiki/tiki_string_view.h"
@@ -101,4 +102,7 @@ namespace tiki
 	DynamicString				operator+( const char* lhs, const DynamicString& rhs );
 
 	DynamicString operator ""_s( const char* pString, uintsize length );
+
+	template<>
+	TikiHash32 calculateValueHash( const DynamicString& value );
 }

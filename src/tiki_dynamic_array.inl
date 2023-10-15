@@ -177,6 +177,14 @@ namespace tiki
 	}
 
 	template< class T >
+	void DynamicArray< T >::swap( const DynamicArray& rhs )
+	{
+		swap( m_data, rhs.m_data );
+		swap( m_length, rhs.m_length );
+		swap( m_capacity, rhs.m_capacity );
+	}
+
+	template< class T >
 	inline DynamicArray< T >& DynamicArray< T >::operator=( const DynamicArray& rhs )
 	{
 		clear();

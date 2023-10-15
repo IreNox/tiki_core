@@ -6,14 +6,14 @@
 
 namespace tiki
 {
-	typedef uint8_t		uint8;
-	typedef int8_t		sint8;
-	typedef uint16_t	uint16;
-	typedef int16_t		sint16;
-	typedef uint32_t	uint32;
-	typedef int32_t		sint32;
-	typedef uint64_t	uint64;
-	typedef int64_t		sint64;
+	using uint8		= uint8_t;
+	using sint8		= int8_t;
+	using uint16	= uint16_t;
+	using sint16	= int16_t;
+	using uint32	= uint32_t;
+	using sint32	= int32_t;
+	using uint64	= uint64_t;
+	using sint64	= int64_t;
 
 	TIKI_STATIC_ASSERT( sizeof( uint8 ) == 1u );
 	TIKI_STATIC_ASSERT( sizeof( sint8 ) == 1u );
@@ -24,43 +24,45 @@ namespace tiki
 	TIKI_STATIC_ASSERT( sizeof( uint64 ) == 8u );
 	TIKI_STATIC_ASSERT( sizeof( sint64 ) == 8u );
 
-	typedef int			sint;
-	typedef unsigned	uint;
+	using sint	= int;
+	using uint	= unsigned;
+	using byte	= uint8;
 
-	typedef uint8		byte;
+	using TikiHash32	= uint32;
+	using TikiHash64	= uint64;
 
 #if TIKI_ENABLED( TIKI_POINTER_16 )
-	typedef uint16		uintptr;
+	using uintptr	= uint16;
 	TIKI_STATIC_ASSERT( sizeof( void* ) == 2u );
 #elif TIKI_ENABLED( TIKI_POINTER_32 )
-	typedef uint32		uintptr;
+	using uintptr	= uint32;
 	TIKI_STATIC_ASSERT( sizeof( void* ) == 4u );
 #elif TIKI_ENABLED( TIKI_POINTER_64 )
-	typedef uint64		uintptr;
+	using uintptr	= uint64;
 	TIKI_STATIC_ASSERT( sizeof( void* ) == 8u );
 #else
 #	error "No Pointer size"
 #endif
 
 #if TIKI_ENABLED( TIKI_REGISTER_8 )
-	typedef uint8		uintreg;
-	typedef uint8		uintsize;
-	typedef sint8		sintsize;
+	using uintreg	= uint8;
+	using uintsize	= uint8;
+	using sintsize	= sint8;
 #elif TIKI_ENABLED( TIKI_REGISTER_16 )
-	typedef uint16		uintreg;
-	typedef uint16		uintsize;
-	typedef sint16		sintsize;
+	using uintreg	= uint16;
+	using uintsize	= uint16;
+	using sintsize	= sint16;
 #elif TIKI_ENABLED( TIKI_REGISTER_32 )
-	typedef uint32		uintreg;
-	typedef uint32		uintsize;
-	typedef sint32		sintsize;
+	using uintreg	= uint32;
+	using uintsize	= uint32;
+	using sintsize	= sint32;
 #elif TIKI_ENABLED( TIKI_REGISTER_64 )
-	typedef uint64		uintreg;
-	typedef uint64		uintsize;
-	typedef sint64		sintsize;
+	using uintreg	= uint64;
+	using uintsize	= uint64;
+	using sintsize	= sint64;
 #else
 #	error "No Register size"
 #endif
 
-	static const uintreg InvalidIndex = (uintreg)-1;
+	static const uintsize InvalidIndex = (uintsize)-1;
 }

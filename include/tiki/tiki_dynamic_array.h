@@ -41,6 +41,8 @@ namespace tiki
 		inline void				eraseUnsorted( const T* pValue );
 		inline void				eraseUnsortedByIndex( uintsize index );
 
+		inline void				swap( const DynamicArray& rhs );
+
 		inline DynamicArray&	operator=( const DynamicArray& rhs );
 
 	protected:

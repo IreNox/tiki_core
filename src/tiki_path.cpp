@@ -59,7 +59,7 @@ namespace tiki
 
 	Path Path::getParent() const
 	{
-		const uintreg slashIndex = m_path.lastIndexOf( '/' );
+		const uintsize slashIndex = m_path.lastIndexOf( '/' );
 		if( slashIndex == InvalidIndex )
 		{
 			return Path();
@@ -82,26 +82,9 @@ namespace tiki
 		return result;
 	}
 
-	Path Path::push( const DynamicString& pathString ) const
+	Path Path::replaceFilename( const StringView& value ) const
 	{
-		Path path = Path( pathString );
-		return push( path );
-	}
-
-	DynamicString Path::getFilename() const
-	{
-		uintreg slashIndex = m_path.lastIndexOf( '/' );
-		if( slashIndex == InvalidIndex )
-		{
-			slashIndex = 0u;
-		}
-
-		return m_path.subString( slashIndex + 1u );
-	}
-
-	DynamicString Path::getBasename() const
-	{
-		uintreg slashIndex = m_path.lastIndexOf( '/' );
+		uintsize slashIndex = m_path.lastIndexOf( '/' );
 		if( slashIndex == InvalidIndex )
 		{
 			slashIndex = 0u;
@@ -111,19 +94,96 @@ namespace tiki
 			slashIndex++;
 		}
 
-		uintreg dotIndex = m_path.lastIndexOf( '.' );
+		Path result = *this;
+		result.m_path.terminate( slashIndex );
+		result.m_path += value;
+
+		return result;
+	}
+
+	Path Path::replaceBasename( const StringView& value ) const
+	{
+		uintsize slashIndex = m_path.lastIndexOf( '/' );
+		if( slashIndex == InvalidIndex )
+		{
+			slashIndex = 0u;
+		}
+		else
+		{
+			slashIndex++;
+		}
+
+		uintsize dotIndex = m_path.lastIndexOf( '.' );
 		if( dotIndex == InvalidIndex )
 		{
 			dotIndex = m_path.getLength();
 		}
 
-		const uintreg length = dotIndex - slashIndex;
+		const uintsize length = dotIndex - slashIndex;
+
+		Path result = *this;
+		result.m_path.terminate( slashIndex );
+		result.m_path += value;
+		result.m_path += m_path.subString( dotIndex );
+
+		return result;
+	}
+
+	Path Path::replaceExtension( const StringView& value ) const
+	{
+		const uintsize dotIndex = m_path.lastIndexOf( '.' );
+		if( dotIndex == InvalidIndex )
+		{
+			return Path();
+		}
+
+		Path result = *this;
+		result.m_path.terminate( dotIndex );
+		result.m_path += value;
+
+		return result;
+	}
+
+	DynamicString Path::getFilename() const
+	{
+		uintsize slashIndex = m_path.lastIndexOf( '/' );
+		if( slashIndex == InvalidIndex )
+		{
+			slashIndex = 0u;
+		}
+		else
+		{
+			slashIndex++;
+		}
+
+		return m_path.subString( slashIndex + 1u );
+	}
+
+	DynamicString Path::getBasename() const
+	{
+		uintsize slashIndex = m_path.lastIndexOf( '/' );
+		if( slashIndex == InvalidIndex )
+		{
+			slashIndex = 0u;
+		}
+		else
+		{
+			slashIndex++;
+		}
+
+		uintsize dotIndex = m_path.lastIndexOf( '.' );
+		if( dotIndex == InvalidIndex )
+		{
+			dotIndex = m_path.getLength();
+		}
+
+		const uintsize length = dotIndex - slashIndex;
 		return m_path.subString( slashIndex, length );
 	}
 
 	DynamicString Path::getExtension() const
 	{
-		const uintreg dotIndex = m_path.lastIndexOf( '.' );
+		const uintsize dotIndex = m_path.lastIndexOf( '.' );
 		if( dotIndex == InvalidIndex )
 		{
 			return DynamicString();
