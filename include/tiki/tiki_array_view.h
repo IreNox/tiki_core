@@ -11,32 +11,39 @@ namespace tiki
 	{
 	public:
 
-		inline			ArrayView();
-		inline			ArrayView( const T* data, uintsize length );
-		inline			ArrayView( const std::initializer_list< T >& initList );
+		inline					ArrayView();
+		inline					ArrayView( const T* data, uintsize length );
+		inline					ArrayView( const std::initializer_list< T >& initList );
 
-		inline void		set( const T* data, uintsize length );
+		inline void				set( const T* data, uintsize length );
 
-		inline bool		isSet() const { return m_data != nullptr; }
-		inline bool		isEmpty() const { return m_length == 0u; }
-		inline bool		hasElements() const { return m_length != 0u; }
+		inline bool				isSet() const { return m_data != nullptr; }
+		inline bool				isEmpty() const { return m_length == 0u; }
+		inline bool				hasElements() const { return m_length != 0u; }
 
-		inline uintsize	getLength() const { return m_length; }
+		inline uintsize			getLength() const { return m_length; }
+		inline uintsize			getSizeInBytes() const { return m_length * sizeof( T ); }
 
-		inline const T*	getData() const { return m_data; }
+		inline const T*			getData() const { return m_data; }
 
-		inline const T*	getBegin() const;
-		inline const T*	getEnd() const;
+		inline const T*			getBegin() const;
+		inline const T*			getEnd() const;
 
-		inline const T&	getFront() const;
-		inline const T&	getBack() const;
+		inline const T&			getFront() const;
+		inline const T&			getBack() const;
 
-		inline const T&	operator[]( uintsize index ) const;
+		inline const T&			getElement( uintsize index ) const;
+		inline const T&			getReverseElement( uintsize index ) const;
+
+		inline ArrayView< T >	getRange( uintsize start ) const;
+		inline ArrayView< T >	getRange( uintsize start, uintsize length ) const;
+
+		inline const T&			operator[]( uintsize index ) const;
 
 	protected:
 
-		const T*		m_data;
-		uintsize		m_length;
+		const T*			m_data;
+		uintsize			m_length;
 	};
 
 	template< class T > inline const T* begin( const ArrayView< T >& arr ) { return arr.getBegin(); }

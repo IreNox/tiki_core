@@ -73,6 +73,50 @@ namespace tiki
 	}
 
 	template< class T >
+	Array< T > Array< T >::getRange( uintsize start )
+	{
+		if( start >= m_length )
+		{
+			return Array< T >();
+		}
+
+		return Array< T >( m_data + start, m_length - start );
+	}
+
+	template< class T >
+	Array< T > Array< T >::getRange( uintsize start, uintsize length )
+	{
+		if( start >= m_length )
+		{
+			return Array< T >();
+		}
+
+		return Array< T >( m_data + start, min( length, m_length - start ) );
+	}
+
+	template< class T >
+	ArrayView< T > Array< T >::getRangeView( uintsize start ) const
+	{
+		if( start >= m_length )
+		{
+			return ArrayView< T >();
+		}
+
+		return ArrayView< T >( m_data + start, m_length - start );
+	}
+
+	template< class T >
+	ArrayView< T > Array< T >::getRangeView( uintsize start, uintsize length ) const
+	{
+		if( start >= m_length )
+		{
+			return ArrayView< T >();
+		}
+
+		return ArrayView< T >( m_data + start, min( length, m_length - start ) );
+	}
+
+	template< class T >
 	ArrayView< T > Array< T >::toView() const
 	{
 		return ArrayView< T >( m_data, m_length );

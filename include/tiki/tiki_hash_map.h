@@ -81,16 +81,16 @@ namespace tiki
 
 	private:
 
-		uint64*					m_inUseMasks;
-		Pair*					m_data;
-		uintsize				m_length;
-		uintsize				m_capacity;
+		uint64*					m_inUseMasks	= nullptr;
+		Pair*					m_data			= nullptr;
+		uintsize				m_length		= 0u;
+		uintsize				m_capacity		= 0u;
 
 		inline uintsize			findIndex( const TKey& key ) const;
 		inline uintsize			findFirstIndex() const;
 		inline uintsize			findNextIndex( uintsize index ) const;
 
-		void					grow();
+		void					grow( uintsize minCapacity = 0u );
 	};
 
 	template< class TKey, class TValue > typename HashMap< TKey, TValue >::Iterator begin( HashMap< TKey, TValue >& arr ) { return arr.getBegin(); }

@@ -131,7 +131,7 @@ namespace tiki
 
 	uintsize DynamicString::lastIndexOf( char c, uintsize index /*= InvalidIndex*/ ) const
 	{
-		index = TIKI_MIN( index, m_length - 1u );
+		index = min( index, m_length - 1u );
 		while( index < m_length )
 		{
 			if( m_data[ index ] == c )
@@ -147,7 +147,7 @@ namespace tiki
 
 	uintsize DynamicString::lastIndexOf( const StringView& str, uintsize index /*= InvalidIndex*/ ) const
 	{
-		index = TIKI_MIN( index, m_length - 1u );
+		index = min( index, m_length - 1u );
 		while( index < m_length )
 		{
 			uintsize b = 0;
@@ -707,7 +707,7 @@ namespace tiki
 
 	DynamicString::operator const char*() const
 	{
-		return m_data;
+		return toConstCharPointer();
 	}
 
 	DynamicString::operator StringView() const

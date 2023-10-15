@@ -1,14 +1,14 @@
 #pragma once
 
-#define TIKI_ON 				1
-#define TIKI_OFF				0
+#define TIKI_ON 				1-
+#define TIKI_OFF				0-
 
-#define TIKI_ENABLED( value )	( ( 1 + value ) == 2 )
-#define TIKI_DISABLED( value )	( ( 1 + value ) != 2 )
+#define TIKI_ENABLED( value )	((2 - (value 0)) == 1)
+#define TIKI_DISABLED( value )	((2 - (value 0)) == 2)
 
-#define TIKI_IF( expr )		( ( expr ) ? TIKI_ON : TIKI_OFF )
+#define TIKI_IF( expr )			((expr) ? TIKI_ON : TIKI_OFF)
 
-#if defined( _WIN32 ) // Windows
+#if defined( _WIN32 )
 #	define TIKI_PLATFORM_WINDOWS		TIKI_ON
 #	if defined( _WIN64 )
 #		define TIKI_POINTER_64			TIKI_ON
@@ -146,32 +146,28 @@
 #endif
 
 #if !defined( TIKI_DEBUG )
-#	if defined( DEBUG ) ||defined( _DEBUG ) || defined( __DEBUG__ )
+#	if defined( DEBUG ) || defined( _DEBUG ) || defined( __DEBUG__ )
 #		define TIKI_DEBUG				TIKI_ON
 #	else
 #		define TIKI_DEBUG				TIKI_OFF
 #	endif
 #endif
 
-#if !defined( TIKI_HAS_OVERRIDE )
-#	define TIKI_HAS_OVERRIDE			TIKI_ON
+#if !defined( TIKI_USE_OVERRIDE )
+#	define TIKI_USE_OVERRIDE			TIKI_ON
 #endif
 
-#if !defined( TIKI_HAS_FINAL )
-#	define TIKI_HAS_FINAL				TIKI_ON
+#if !defined( TIKI_USE_FINAL )
+#	define TIKI_USE_FINAL				TIKI_ON
 #endif
 
-#if !defined( TIKI_USE_INLINE )
-#	define TIKI_USE_INLINE				TIKI_ON
-#endif
-
-#if TIKI_ENABLED( TIKI_HAS_OVERRIDE )
+#if TIKI_ENABLED( TIKI_USE_OVERRIDE )
 #	define TIKI_OVERRIDE override
 #else
 #	define TIKI_OVERRIDE
 #endif
 
-#if TIKI_ENABLED( TIKI_HAS_FINAL )
+#if TIKI_ENABLED( TIKI_USE_FINAL )
 #	define TIKI_FINAL final
 #else
 #	define TIKI_FINAL
@@ -195,57 +191,46 @@
 #	define TIKI_ASSERT( expr )
 #endif
 
-#define TIKI_COUNT( arr ) ( sizeof( arr ) / sizeof( *(arr) ) )
-
 #if TIKI_ENABLED( TIKI_COMPILER_MSVC )
-#	define TIKI_ALIGN_PREFIX( var )		__declspec( align( var ) )
+#	define TIKI_ALIGN_PREFIX( var )			__declspec( align( var ) )
 #	define TIKI_ALIGN_POSTFIX( var )
-#	define TIKI_ALIGNOF( type )			__alignof( type )
+#	define TIKI_ALIGNOF( type )				__alignof( type )
+
+#	define TIKI_OFFSETOF( type, member )	((uintsize)(&((type*)nullptr)->member))
+
+#	define TIKI_FORCE_INLINE				__forceinline
+#	define TIKI_NO_INLINE					__declspec(noinline)
 #elif TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
 #	define TIKI_ALIGN_PREFIX( var )
-#	define TIKI_ALIGN_POSTFIX( var )	__attribute__( ( aligned( var ) ) )
-#	define TIKI_ALIGNOF( type )			( __alignof__( type ) )
+#	define TIKI_ALIGN_POSTFIX( var )		__attribute__( aligned( var ) ) )
+#	define TIKI_ALIGNOF( type )				__alignof__( type )
+
+#	define TIKI_OFFSETOF( type, member )	__builtin_offsetof( type, member )
+
+#	define TIKI_FORCE_INLINE				inline __attribute__((always_inline))
+#	define TIKI_NO_INLINE					__attribute__((noinline))
+#else
+#	error "Unsupported compiler!"
 #endif
 
-#if TIKI_ENABLED( TIKI_ARCH_X86 ) || TIKI_ENABLED( TIKI_ARCH_X64 ) // also for AMD64?
+#if TIKI_ENABLED( TIKI_ARCH_X86 ) || TIKI_ENABLED( TIKI_ARCH_X64 ) // also for ARM?
 #	if TIKI_ENABLED( TIKI_COMPILER_MSVC )
-#		define TIKI_DLL					__declspec(dllexport)
+#		define TIKI_DLL_EXPORT			__declspec(dllexport)
+#		define TIKI_DLL_IMPORT			__declspec(dllimport)
 #		define TIKI_CDECL				__stdcall
 #	elif TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
-#		define TIKI_DLL					extern
+#		define TIKI_DLL_EXPORT			extern
+#		define TIKI_DLL_IMPORT			extern
 #		define TIKI_CDECL				__attribute__((__cdecl__))
 #	endif
 #else
-#	define TIKI_DLL
+#	define TIKI_DLL_EXPORT
+#	define TIKI_DLL_IMPORT
 #	define TIKI_CDECL
 #endif
 
-#if TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
-#	define TIKI_OFFSETOF( type, member )		( __builtin_offsetof( type, member ) )
-#else
-#	define TIKI_OFFSETOF( type, member )		( (uint)(&((type*)nullptr)->member) )
-#endif
-
-#define TIKI_MIN( a, b ) ( ( a ) < ( b ) ? ( a ) : ( b ) )
-#define TIKI_MAX( a, b ) ( ( a ) > ( b ) ? ( a ) : ( b ) )
-
-#if TIKI_ENABLED( TIKI_USE_INLINE )
-#	if TIKI_ENABLED( TIKI_COMPILER_MSVC )
-#		define TIKI_INLINE				inline
-#		define TIKI_FORCE_INLINE		__forceinline
-#		define TIKI_NO_INLINE			__declspec(noinline)
-#	elif TIKI_ENABLED( TIKI_COMPILER_GCC ) || TIKI_ENABLED( TIKI_COMPILER_CLANG )
-#		define TIKI_INLINE				inline
-#		define TIKI_FORCE_INLINE		inline __attribute__((always_inline))
-#		define TIKI_NO_INLINE			__attribute__((noinline))
-#	else
-#		error Platform not implemented
-#	endif
-#else
-#	define TIKI_INLINE
-#	define TIKI_FORCE_INLINE
-#	define TIKI_NO_INLINE
-#endif
+#define TIKI_STATIC_MIN( a, b ) ((a) < (b) ? (a) : (b))
+#define TIKI_STATIC_MAX( a, b ) ((a) > (b) ? (a) : (b))
 
 #define TIKI_STATIC_ASSERT( expr )		static_assert( ( expr ), #expr )
 

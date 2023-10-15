@@ -44,23 +44,34 @@ namespace tiki
 	}
 
 	template< class T >
-	inline void DynamicArray< T >::setLengthValue( uintsize size, T value )
+	inline void DynamicArray< T >::setLength( uintsize length, T value )
 	{
-		checkCapacity( size );
+		checkCapacity( length );
 
-		for( uintsize i = this->m_length; i < size; ++i )
+		for( uintsize i = this->m_length; i < length; ++i )
 		{
 			this->m_data[ i ] = value;
 		}
 
-		this->m_length = size;
+		this->m_length = length;
 	}
 
 	template< class T >
-	inline void DynamicArray< T >::setLengthUninitialized( uintsize size )
+	void DynamicArray< T >::setLengthZero( uintsize length )
 	{
-		checkCapacity( size );
-		this->m_length = size;
+		checkCapacity( length );
+
+		void* dataStart = &m_data[ m_length ];
+		memset( dataStart, 0, sizeof( T ) * (m_length - length) );
+
+		this->m_length = length;
+	}
+
+	template< class T >
+	inline void DynamicArray< T >::setLengthUninitialized( uintsize length )
+	{
+		checkCapacity( length );
+		this->m_length = length;
 	}
 
 	template< class T >
@@ -121,6 +132,17 @@ namespace tiki
 		{
 			this->m_data[ this->m_length++ ] = pData[ i ];
 		}
+	}
+
+	template< class T >
+	Array< T > DynamicArray< T >::pushRange( uintsize length )
+	{
+		checkCapacity( this->m_length + length );
+
+		Array< T > result( m_data + m_length, length );
+		m_length += length;
+
+		return result;
 	}
 
 	template< class T >
@@ -196,7 +218,7 @@ namespace tiki
 	void DynamicArray< T >::checkCapacity( uintsize capacity )
 	{
 		const uintsize nextCapacity = getNextPowerOfTwo( capacity );
-		if( nextCapacity <= m_capacity )
+		if( capacity == 0u || nextCapacity <= m_capacity )
 		{
 			return;
 		}

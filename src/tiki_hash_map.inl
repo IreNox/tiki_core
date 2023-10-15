@@ -6,26 +6,17 @@ namespace tiki
 {
 	template< class TKey, class TValue >
 	HashMap< TKey, TValue >::HashMap()
-		: m_data( nullptr )
-		, m_length( 0u )
-		, m_capacity( 0u )
 	{
 	}
 
 	template< class TKey, class TValue >
 	HashMap< TKey, TValue >::HashMap( const HashMap& rhs )
-		: m_data( nullptr )
-		, m_length( 0u )
-		, m_capacity( 0u )
 	{
 		*this = rhs;
 	}
 
 	template< class TKey, class TValue >
 	HashMap< TKey, TValue >::HashMap( const std::initializer_list< Pair >& initList )
-		: m_data( nullptr )
-		, m_length( 0u )
-		, m_capacity( 0u )
 	{
 		for( const Pair& pair : initList )
 		{
@@ -106,6 +97,11 @@ namespace tiki
 	template< typename TKey, typename TValue >
 	TValue& HashMap< TKey, TValue >::insertKey( const TKey& key, bool& isNew )
 	{
+		if( m_capacity == 0u )
+		{
+			grow();
+		}
+
 		const TikiHash32 hash	= calculateValueHash( key );
 		uint32 indexMask		= uint32( m_capacity - 1u );
 
@@ -280,7 +276,7 @@ namespace tiki
 		const ImUiHash hash		= calculateValueHash( key );
 		const uint32 indexMask	= uint32( m_capacity - 1u );
 
-		for( uint32 hashOffset = 0u; ; ++hashOffset )
+		for( uint32 hashOffset = 0u; hashOffset < m_capacity; ++hashOffset )
 		{
 			const uintsize index = (hash + hashOffset) & indexMask;
 
@@ -362,15 +358,15 @@ namespace tiki
 	}
 
 	template< typename TKey, typename TValue >
-	void HashMap< TKey, TValue >::grow()
+	void HashMap< TKey, TValue >::grow( uintsize minCapacity /* = 0u */ )
 	{
-		uintsize nextCapacity = m_capacity;
 		uint64* newEntriesInUse;
 		Pair* newEntries;
-		bool retry = false;
-		do
+		bool retry = true;
+		uintsize nextCapacity = max( max< uintsize >( 64u, m_capacity ), getNextPowerOfTwo( minCapacity ) );
+		while( retry )
 		{
-			nextCapacity <<= 1u;
+			retry = false;
 
 			const uint32 nextIndexMask = uint32( nextCapacity - 1u );
 
@@ -382,6 +378,8 @@ namespace tiki
 				delete[] newEntries;
 				return;
 			}
+
+			memset( newEntriesInUse, 0, sizeof( *newEntriesInUse ) * (nextCapacity >> 6u) );
 
 			for( uintsize mapIndex = 0; mapIndex < m_capacity; ++mapIndex )
 			{
@@ -405,7 +403,7 @@ namespace tiki
 					{
 						const Pair& newEntry = newEntries[ newIndex ];
 						const ImUiHash newHash = calculateValueHash( newEntry.key );
-						if( (newHash & nextIndexMask) != (hash & nextIndexMask) )
+						if( hashOffset >= nextCapacity || (newHash & nextIndexMask) != (hash & nextIndexMask) )
 						{
 							retry = true;
 							break;
@@ -425,11 +423,12 @@ namespace tiki
 				{
 					delete[] newEntriesInUse;
 					delete[] newEntries;
+
+					nextCapacity <<= 1u;
 					break;
 				}
 			}
 		}
-		while( retry );
 
 		delete[] m_inUseMasks;
 		delete[] m_data;

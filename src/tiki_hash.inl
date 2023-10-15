@@ -4,6 +4,21 @@
 
 namespace tiki
 {
+	template< typename T >
+	inline TikiHash32 calculateValueHash( const T* ptr )
+	{
+		const uintsize ptrInt = (uintsize)ptr;
+#if TIKI_ENABLED( TIKI_POINTER_16 )
+		return  TikiHash32( ptrInt >> 1u );
+#elif TIKI_ENABLED( TIKI_POINTER_32 )
+		return  TikiHash32( ptrInt >> 2u );
+#elif TIKI_ENABLED( TIKI_POINTER_64 )
+		return  TikiHash32( ptrInt >> 3u );
+#else
+		return  TikiHash32( ptrInt );
+#endif
+	}
+
 	inline TikiHash32 calculateHash( const void* data, uintsize dataSize, TikiHash32 seed )
 	{
 		// Murmur3

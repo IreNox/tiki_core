@@ -141,14 +141,14 @@ namespace tiki
 	template< class T, uintsize TSize >
 	inline T& StaticArray< T, TSize >::operator[]( uintsize index )
 	{
-		TIKI_ASSERT( index < TSize);
+		TIKI_ASSERT( index < TSize );
 		return m_data[ index ];
 	}
 
 	template< class T, uintsize TSize >
 	inline const T& StaticArray< T, TSize >::operator[]( uintsize index ) const
 	{
-		TIKI_ASSERT( index < TSize);
+		TIKI_ASSERT( index < TSize );
 		return m_data[ index ];
 	}
 }

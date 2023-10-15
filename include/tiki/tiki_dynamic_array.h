@@ -21,8 +21,9 @@ namespace tiki
 
 		inline void				clear();
 		inline void				reserve( uintsize capacity );
-		inline void				setLengthValue( uintsize size, T value );
-		inline void				setLengthUninitialized( uintsize size );
+		inline void				setLength( uintsize length, T value );
+		inline void				setLengthZero( uintsize length );
+		inline void				setLengthUninitialized( uintsize length );
 
 		inline T&				insert( uintsize index );
 		inline void				insert( const T& value, uintsize index );
@@ -31,6 +32,7 @@ namespace tiki
 		inline T&				pushBack( const T& value );
 		inline void				pushRange( const ArrayView< T >& arrayView );
 		inline void				pushRange( const T* pData, uintsize length );
+		inline Array< T >		pushRange( uintsize length );
 
 		inline void				popBack();
 

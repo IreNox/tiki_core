@@ -67,14 +67,40 @@
 			</ArrayItems>
 		</Expand>
 	</Type>
-	<Type Name="tiki::Map&lt;*&gt;">
+	<Type Name="tiki::HashMap&lt;*&gt;">
+		<DisplayString>{{ length={m_length} }}</DisplayString>
+		<Expand>
+			<Item Name="[length]" ExcludeView="simple">m_length</Item>
+			<Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
+			<CustomListItems MaxItemsPerView="5000" ExcludeView="Test" Condition="m_length > 0">
+				<Variable Name="index" InitialValue="0" />
+				<Variable Name="inUseMask" InitialValue="(uint32*)m_inUseMasks" />
+				<Variable Name="inUseIndexMask" InitialValue="1u" />
+
+				<Size>m_length</Size>
+				<Exec>inUseIndexMask = 1</Exec>
+				<Loop Condition="index &lt; m_capacity">
+					<If Condition="*inUseMask &amp; inUseIndexMask">
+						<Item>m_data[index]</Item>
+					</If>
+					<Exec>inUseIndexMask &lt;&lt;= 1</Exec>
+					<If Condition="inUseIndexMask == 0">
+						<Exec>inUseMask++</Exec>
+						<Exec>inUseIndexMask = 1u</Exec>
+					</If>
+					<Exec>index++</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+	<Type Name="tiki::SortedMap&lt;*&gt;">
 		<DisplayString>{{ length={m_length} }}</DisplayString>
 		<Expand>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
 			<Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
 			<ArrayItems>
 				<Size>m_length</Size>
-				<ValuePointer>m_pData</ValuePointer>
+				<ValuePointer>m_data</ValuePointer>
 			</ArrayItems>
 		</Expand>
 	</Type>

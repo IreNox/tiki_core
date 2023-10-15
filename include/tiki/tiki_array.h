@@ -16,6 +16,7 @@ namespace tiki
 		inline bool				isEmpty() const		{ return m_length == 0u; }
 		inline bool				hasElements() const	{ return m_length != 0u; }
 		inline uintsize			getLength() const	{ return m_length; }
+		inline uintsize			getSizeInBytes() const { return m_length * sizeof( T ); }
 
 		inline T*				getData()			{ return m_data; }
 		inline const T*			getData() const		{ return m_data; }
@@ -34,6 +35,11 @@ namespace tiki
 		inline const T&			getElement( uintsize index ) const;
 		inline T&				getReverseElement( uintsize index );
 		inline const T&			getReverseElement( uintsize index ) const;
+
+		inline Array< T >		getRange( uintsize start );
+		inline Array< T >		getRange( uintsize start, uintsize length );
+		inline ArrayView< T >	getRangeView( uintsize start ) const;
+		inline ArrayView< T >	getRangeView( uintsize start, uintsize length ) const;
 
 		inline ArrayView< T >	toView() const;
 
