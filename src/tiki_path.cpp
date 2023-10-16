@@ -156,7 +156,7 @@ namespace tiki
 			slashIndex++;
 		}
 
-		return m_path.subString( slashIndex + 1u );
+		return m_path.subString( slashIndex );
 	}
 
 	DynamicString Path::getBasename() const

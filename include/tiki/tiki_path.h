@@ -14,6 +14,7 @@ namespace tiki
 						Path( const DynamicString& path );
 
 		bool			isEmpty() const { return m_path.isEmpty(); }
+		bool			hasElements() const { return m_path.hasElements(); }
 		bool			isAbsolute() const;
 		bool			isRelative() const;
 
@@ -32,7 +33,7 @@ namespace tiki
 		DynamicString	getExtension() const;
 
 		DynamicString	getNativePath() const;
-		DynamicString	getGenericPath() const { return m_path; }
+		StringView		getGenericPath() const { return m_path; }
 
 		bool			operator==( const Path& rhs ) const;
 		bool			operator!=( const Path& rhs ) const;

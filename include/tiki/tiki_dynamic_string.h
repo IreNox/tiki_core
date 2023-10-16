@@ -27,7 +27,6 @@ namespace tiki
 
 		uintsize				indexOf( char c, uintsize index = 0u ) const;
 		uintsize				indexOf( const StringView& str, uintsize index = 0u ) const;
-
 		uintsize				lastIndexOf( char c, uintsize index = InvalidIndex ) const;
 		uintsize				lastIndexOf( const StringView& str, uintsize index = InvalidIndex ) const;
 

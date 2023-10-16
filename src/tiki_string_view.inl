@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tiki/tiki_ascii.h>
+
 #include <cstring>
 
 namespace tiki
@@ -22,6 +24,244 @@ namespace tiki
 	inline StringView::StringView( const char( &string )[ TLen ] )
 		: ArrayView( string, TLen - 1u )
 	{
+	}
+
+	inline uintsize StringView::indexOf( char c, uintsize index /*= 0u*/ ) const
+	{
+		TIKI_ASSERT( index < m_length );
+
+		uintsize i = index;
+		while( i < m_length )
+		{
+			if( m_data[ i ] == c )
+			{
+				return i;
+			}
+			i++;
+		}
+
+		return InvalidIndex;
+	}
+
+	inline uintsize StringView::indexOf( const StringView& str, uintsize index /*= 0u*/ ) const
+	{
+		if( str.getLength() > m_length ) return InvalidIndex;
+
+		uintsize i = index;
+		uintsize c = m_length - str.getLength();
+
+		do
+		{
+			uintsize b = 0;
+			bool found = true;
+			while( b < str.getLength() )
+			{
+				if( m_data[ i + b ] != str[ b ] )
+				{
+					found = false;
+					break;
+				}
+				b++;
+			}
+
+			if( found )
+			{
+				return i;
+			}
+
+			i++;
+		}
+		while( i <= c );
+
+		return InvalidIndex;
+	}
+
+	inline uintsize StringView::lastIndexOf( char c, uintsize index /*= InvalidIndex*/ ) const
+	{
+		index = min( index, m_length - 1u );
+		while( index < m_length )
+		{
+			if( m_data[ index ] == c )
+			{
+				return index;
+			}
+
+			index--;
+		}
+
+		return InvalidIndex;
+	}
+
+	inline uintsize StringView::lastIndexOf( const StringView& str, uintsize index /*= InvalidIndex*/ ) const
+	{
+		index = min( index, m_length - 1u );
+		while( index < m_length )
+		{
+			uintsize b = 0;
+			bool found = true;
+			while( b < str.getLength() )
+			{
+				if( m_data[ index + b ] != str[ b ] )
+				{
+					found = false;
+					break;
+				}
+
+				b++;
+			}
+
+			if( found )
+			{
+				return index;
+			}
+
+			index--;
+		}
+
+		return InvalidIndex;
+	}
+
+	inline bool StringView::contains( const StringView& str ) const
+	{
+		return indexOf( str ) != InvalidIndex;
+	}
+
+	inline bool StringView::startsWith( const StringView& str ) const
+	{
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
+
+		uintsize i = 0;
+		while( i < str.getLength() )
+		{
+			if( m_data[ i ] != str[ i ] )
+			{
+				return false;
+			}
+			i++;
+		}
+
+		return true;
+	}
+
+	inline bool StringView::startsWithNoCase( const StringView& str ) const
+	{
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
+
+		uintsize i = 0;
+		while( i < str.getLength() )
+		{
+			if( !ascii::isEqualsNoCase( m_data[ i ], str[ i ] ) )
+			{
+				return false;
+			}
+			i++;
+		}
+
+		return true;
+	}
+
+	inline bool StringView::endsWith( const StringView& str ) const
+	{
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
+
+		uintsize b = 0;
+		uintsize i = m_length - str.getLength();
+		while( i < m_length )
+		{
+			if( m_data[ i ] != str[ b ] )
+			{
+				return false;
+			}
+			i++;
+			b++;
+		}
+
+		return true;
+	}
+
+	inline bool StringView::endsWithNoCase( const StringView& str ) const
+	{
+		if( m_length < str.getLength() )
+		{
+			return false;
+		}
+
+		uintsize b = 0;
+		uintsize i = m_length - str.getLength();
+		while( i < m_length )
+		{
+			if( ascii::isEqualsNoCase( m_data[ i ], str[ b ] ) )
+			{
+				return false;
+			}
+			i++;
+			b++;
+		}
+
+		return true;
+	}
+
+	inline uintsize StringView::countSubstring( const StringView& substr ) const
+	{
+		if( substr.getLength() > m_length )
+		{
+			return 0u;
+		}
+
+		uintsize index = 0;
+		uintsize count = 0;
+		while( index < m_length )
+		{
+			uintsize b = 0;
+			bool found = true;
+			while( b < substr.getLength() )
+			{
+				if( m_data[ index + b ] != substr[ b ] )
+				{
+					found = false;
+					break;
+				}
+				b++;
+			}
+
+			if( found )
+			{
+				count++;
+				index += substr.getLength();
+			}
+			else
+			{
+				index++;
+			}
+		}
+
+		return count;
+	}
+
+	inline StringView StringView::trim() const
+	{
+		uintsize startIndex = 0u;
+		while( ascii::isWhitespace( m_data[ startIndex ] ) && startIndex < getLength() )
+		{
+			startIndex++;
+		}
+
+		uintsize endIndex = getLength();
+		while( ascii::isWhitespace( m_data[ endIndex ] ) && endIndex > 0u )
+		{
+			endIndex--;
+		}
+
+		return subString( startIndex, endIndex - startIndex );
 	}
 
 	inline StringView StringView::subString( uintsize startIndex ) const
