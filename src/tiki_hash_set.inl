@@ -34,7 +34,7 @@ namespace tiki
 	template< typename T >
 	void HashSet< T >::clear()
 	{
-		memset( m_inUseMasks, 0, (sizeof( *m_inUseMasks ) * m_capacity) << 6u );
+		memset( m_inUseMasks, 0, sizeof( *m_inUseMasks ) * (m_capacity >> 6u) );
 		m_length = 0u;
 	}
 
