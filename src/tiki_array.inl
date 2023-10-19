@@ -117,6 +117,21 @@ namespace tiki
 	}
 
 	template< class T >
+	template< typename T2 >
+	inline Array< T2 > Array< T >::cast()
+	{
+		TIKI_ASSERT( isValueAligned( getSizeInBytes(), sizeof( T2 ) ) );
+		return Array< T2 >( (T2*)m_data, getSizeInBytes() / sizeof( T2 ) );
+	}
+
+	template< class T >
+	template< typename T2 >
+	inline ArrayView< T2 > Array< T >::cast() const
+	{
+		return toView().cast< T2 >();
+	}
+
+	template< class T >
 	ArrayView< T > Array< T >::toView() const
 	{
 		return ArrayView< T >( m_data, m_length );

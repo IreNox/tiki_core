@@ -41,6 +41,11 @@ namespace tiki
 		inline ArrayView< T >	getRangeView( uintsize start ) const;
 		inline ArrayView< T >	getRangeView( uintsize start, uintsize length ) const;
 
+		template< typename T2 >
+		inline Array< T2 >		cast();
+		template< typename T2 >
+		inline ArrayView< T2 >	cast() const;
+
 		inline ArrayView< T >	toView() const;
 
 		inline operator			ArrayView< T >() const;
