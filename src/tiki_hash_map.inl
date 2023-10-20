@@ -363,7 +363,7 @@ namespace tiki
 		uint64* newEntriesInUse;
 		Pair* newEntries;
 		bool retry = true;
-		uintsize nextCapacity = max( max< uintsize >( 64u, m_capacity ), getNextPowerOfTwo( minCapacity ) );
+		uintsize nextCapacity = max( max< uintsize >( 64u, m_capacity << 1u ), getNextPowerOfTwo( minCapacity ) );
 		while( retry )
 		{
 			retry = false;
