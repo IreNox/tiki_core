@@ -23,6 +23,7 @@ namespace tiki
 
 		inline uintsize			getLength() const { return m_length; }
 		inline uintsize			getSizeInBytes() const { return m_length * sizeof( T ); }
+		inline uintsize			getElementSizeInBytes() const { return sizeof( T ); }
 
 		inline const T*			getData() const { return m_data; }
 
