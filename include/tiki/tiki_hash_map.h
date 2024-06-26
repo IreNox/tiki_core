@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tiki/tiki_array_view.h"
+#include "tiki/tiki_pair.h"
 #include "tiki/tiki_types.h"
 
 #include <initializer_list>
@@ -12,42 +13,41 @@ namespace tiki
 	{
 	public:
 
-		struct Pair
-		{
-			TKey				key;
-			TValue				value;
-		};
+		using PairType = Pair< TKey, TValue >;
 
-		template< typename T >
+		template< typename TPair >
 		class IteratorBase
 		{
 		public:
 
-			inline				IteratorBase( HashMap& map, uintsize index );
+			using KeyType = typename TPair::KeyType;
+			using ValueType = typename TPair::ValueType;
 
-			const TKey&			getKey() const;
-			T&					getValue();
-			const T&			getValue() const;
+			inline				IteratorBase( const HashMap& map, uintsize index );
 
-			T&					operator*();
-			const T&			operator*() const;
-			T*					operator->();
-			const T*			operator->() const;
+			const KeyType&		getKey() const;
+			ValueType&			getValue();
+			const ValueType&	getValue() const;
+
+			TPair&				operator*();
+			const TPair&		operator*() const;
+			TPair*				operator->();
+			const TPair*		operator->() const;
 			void				operator++();
 			bool				operator!=( const IteratorBase& rhs ) const;
 
 		private:
 
-			HashMap&			m_map;
+			const HashMap&		m_map;
 			uintsize			m_index;
 		};
 
-		using Iterator = IteratorBase< TValue >;
-		using ConstIterator = IteratorBase< const TValue >;
+		using Iterator = IteratorBase< typename PairType >;
+		using ConstIterator = IteratorBase< typename const PairType >;
 
 		inline 					HashMap();
 		inline 					HashMap( const HashMap& rhs );
-		inline 					HashMap( const std::initializer_list< Pair >& initList );
+		inline 					HashMap( const std::initializer_list< PairType >& initList );
 		inline 					~HashMap();
 
 		inline bool				isEmpty() const { return m_length == 0u; }
@@ -63,6 +63,7 @@ namespace tiki
 		inline TValue*			find( const TKey& key );
 		inline const TValue*	find( const TKey& key ) const;
 		inline bool				findAndCopy( TValue& target, const TKey& key ) const;
+		inline TValue			findOrDefault( const TKey& key ) const;
 
 		inline TValue&			insertKey( const TKey& key );
 		inline TValue&			insertKey( const TKey& key, bool& isNew );
@@ -82,7 +83,7 @@ namespace tiki
 	private:
 
 		uint64*					m_inUseMasks	= nullptr;
-		Pair*					m_data			= nullptr;
+		PairType*				m_data			= nullptr;
 		uintsize				m_length		= 0u;
 		uintsize				m_capacity		= 0u;
 
@@ -93,10 +94,10 @@ namespace tiki
 		void					grow( uintsize minCapacity = 0u );
 	};
 
-	template< class TKey, class TValue > typename HashMap< TKey, TValue >::Iterator begin( HashMap< TKey, TValue >& arr ) { return arr.getBegin(); }
-	template< class TKey, class TValue > typename HashMap< TKey, TValue >::Iterator end( HashMap< TKey, TValue >& arr ) { return arr.getEnd(); }
-	template< class TKey, class TValue > const typename HashMap< TKey, TValue >::ConstIterator begin( const HashMap< TKey, TValue >& arr ) { return arr.getBegin(); }
-	template< class TKey, class TValue > const typename HashMap< TKey, TValue >::ConstIterator end( const HashMap< TKey, TValue >& arr ) { return arr.getEnd(); }
+	template< class TKey, class TValue > typename HashMap< TKey, TValue >::Iterator begin( HashMap< TKey, TValue >& map ) { return map.getBegin(); }
+	template< class TKey, class TValue > typename HashMap< TKey, TValue >::Iterator end( HashMap< TKey, TValue >& map ) { return map.getEnd(); }
+	template< class TKey, class TValue > typename HashMap< TKey, TValue >::ConstIterator begin( const HashMap< TKey, TValue >& map ) { return map.getBegin(); }
+	template< class TKey, class TValue > typename HashMap< TKey, TValue >::ConstIterator end( const HashMap< TKey, TValue >& map ) { return map.getEnd(); }
 }
 
 #include "tiki/../../src/tiki_hash_map.inl"

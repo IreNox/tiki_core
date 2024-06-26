@@ -41,6 +41,12 @@
 #	define TIKI_PLATFORM_LINUX			TIKI_OFF
 #endif
 
+#if defined( ESP_PLATFORM )
+#	define TIKI_PLATFORM_ESP			TIKI_ON
+#else
+#	define TIKI_PLATFORM_ESP			TIKI_OFF
+#endif
+
 #if defined( _MSC_VER )
 #	define TIKI_COMPILER_MSVC			TIKI_ON
 #else

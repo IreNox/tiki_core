@@ -135,7 +135,7 @@ namespace tiki
 					}
 
 					T* nextMapEntry = &m_data[ nextIndex ];
-					const ImUiHash nextHash = calculateValueHash( nextMapEntry );
+					const TikiHash32 nextHash = calculateValueHash( nextMapEntry );
 					if( (nextHash & indexMask) != baseIndex )
 					{
 						break;
@@ -161,27 +161,15 @@ namespace tiki
 	}
 
 	template< typename T >
-	typename HashSet< T >::Iterator HashSet< T >::getBegin()
+	typename HashSet< T >::Iterator HashSet< T >::getBegin() const
 	{
 		return Iterator( *this, findFirstIndex() );
 	}
 
 	template< typename T >
-	typename HashSet< T >::ConstIterator HashSet< T >::getBegin() const
-	{
-		return ConstIterator( *this, findFirstIndex() );
-	}
-
-	template< typename T >
-	typename HashSet< T >::Iterator HashSet< T >::getEnd()
+	typename HashSet< T >::Iterator HashSet< T >::getEnd() const
 	{
 		return Iterator( *this, InvalidIndex );
-	}
-
-	template< typename T >
-	typename HashSet< T >::ConstIterator HashSet< T >::getEnd() const
-	{
-		return ConstIterator( *this, InvalidIndex );
 	}
 
 	template< typename T >
@@ -200,7 +188,7 @@ namespace tiki
 	template< typename T >
 	uintsize HashSet< T >::findIndex( const T& key ) const
 	{
-		const ImUiHash hash		= calculateValueHash( key );
+		const TikiHash32 hash		= calculateValueHash( key );
 		const uint32 indexMask	= uint32( m_capacity - 1u );
 
 		for( uint32 hashOffset = 0u; hashOffset < m_capacity; ++hashOffset )
@@ -220,7 +208,7 @@ namespace tiki
 				return index;
 			}
 
-			const ImUiHash mapHash = calculateValueHash( mapEntry.key );
+			const TikiHash32 mapHash = calculateValueHash( mapEntry.key );
 			if( (mapHash & indexMask) != (hash & indexMask) )
 			{
 				break;
@@ -318,7 +306,7 @@ namespace tiki
 				}
 
 				const T& mapEntry = m_data[ mapIndex ];
-				const ImUiHash hash = calculateValueHash( mapEntry );
+				const TikiHash32 hash = calculateValueHash( mapEntry );
 
 				for( uint32 hashOffset = 0; ; ++hashOffset )
 				{
@@ -329,7 +317,7 @@ namespace tiki
 					if( (*newEntryInUse & newEntryInUseMask) != 0u )
 					{
 						const T& newEntry = newEntries[ newIndex ];
-						const ImUiHash newHash = calculateValueHash( newEntry );
+						const TikiHash32 newHash = calculateValueHash( newEntry );
 						if( hashOffset >= nextCapacity || (newHash & nextIndexMask) != (hash & nextIndexMask) )
 						{
 							retry = true;
@@ -364,58 +352,39 @@ namespace tiki
 	}
 
 	template< typename T >
-	template< typename TIt >
-	HashSet< T >::IteratorBase< TIt >::IteratorBase( HashSet& set, uintsize index )
+	HashSet< T >::Iterator::Iterator( const HashSet& set, uintsize index )
 		: m_set( set )
 		, m_index( index )
 	{
 	}
 
 	template< typename T >
-	template< typename TIt >
-	const T& HashSet< T >::IteratorBase< TIt >::getKey() const
+	const T& HashSet< T >::Iterator::getKey() const
+	{
+		TIKI_ASSERT( m_index != InvalidIndex );
+		return m_set.m_data[ m_index ];
+	}
+
+	template< typename T >
+	const T& HashSet< T >::Iterator::operator*() const
 	{
 		return m_set.m_data[ m_index ];
 	}
 
 	template< typename T >
-	template< typename TIt >
-	T& HashSet< T >::IteratorBase< TIt >::operator*()
-	{
-		return m_set.m_data[ m_index ];
-	}
-
-	template< typename T >
-	template< typename TIt >
-	const T& HashSet< T >::IteratorBase< TIt >::operator*() const
-	{
-		return m_set.m_data[ m_index ];
-	}
-
-	template< typename T >
-	template< typename TIt >
-	T* HashSet< T >::IteratorBase< TIt >::operator->()
+	const T* HashSet< T >::Iterator::operator->() const
 	{
 		return &m_set.m_data[ m_index ];
 	}
 
 	template< typename T >
-	template< typename TIt >
-	const T* HashSet< T >::IteratorBase< TIt >::operator->() const
-	{
-		return &m_set.m_data[ m_index ];
-	}
-
-	template< typename T >
-	template< typename TIt >
-	void HashSet< T >::IteratorBase< TIt >::operator++()
+	void HashSet< T >::Iterator::operator++()
 	{
 		m_index = m_set.findNextIndex( m_index );
 	}
 
 	template< typename T >
-	template< typename TIt >
-	bool HashSet< T >::IteratorBase< TIt >::operator!=( const IteratorBase& rhs ) const
+	bool HashSet< T >::Iterator::operator!=( const Iterator& rhs ) const
 	{
 		return m_index != rhs.m_index;
 	}

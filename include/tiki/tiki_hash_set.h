@@ -12,33 +12,27 @@ namespace tiki
 	{
 	public:
 
-		template< typename TIt >
-		class IteratorBase
+		class Iterator
 		{
 		public:
 
-			inline				IteratorBase( HashSet& set, uintsize index );
+			inline				Iterator( const HashSet& set, uintsize index );
 
 			const T&			getKey() const;
 
-			T&					operator*();
 			const T&			operator*() const;
-			T*					operator->();
 			const T*			operator->() const;
 			void				operator++();
-			bool				operator!=( const IteratorBase& rhs ) const;
+			bool				operator!=( const Iterator& rhs ) const;
 
 		private:
 
-			HashSet&			m_set;
+			const HashSet&		m_set;
 			uintsize			m_index;
 		};
 
-		using Iterator = IteratorBase< T >;
-		using ConstIterator = IteratorBase< const T >;
-
 		inline 					HashSet();
-		inline 					HashSet( const HashSet& rhs );
+		inline					HashSet( const HashSet& rhs );
 		inline 					HashSet( const std::initializer_list< T >& initList );
 		inline 					~HashSet();
 
@@ -55,10 +49,8 @@ namespace tiki
 		inline bool				insert( const T& key );		// return isNew
 		inline bool				remove( const T& key );
 
-		inline Iterator			getBegin();
-		inline ConstIterator	getBegin() const;
-		inline Iterator			getEnd();
-		inline ConstIterator	getEnd() const;
+		inline Iterator			getBegin() const;
+		inline Iterator			getEnd() const;
 
 		inline HashSet&			operator=( const HashSet& rhs );
 
@@ -76,10 +68,8 @@ namespace tiki
 		void					grow( uintsize minCapacity = 0u );
 	};
 
-	template< class T > typename HashSet< T >::Iterator begin( HashSet< T >& arr ) { return arr.getBegin(); }
-	template< class T > typename HashSet< T >::Iterator end( HashSet< T >& arr ) { return arr.getEnd(); }
-	template< class T > const typename HashSet< T >::ConstIterator begin( const HashSet< T >& arr ) { return arr.getBegin(); }
-	template< class T > const typename HashSet< T >::ConstIterator end( const HashSet< T >& arr ) { return arr.getEnd(); }
+	template< class T > typename HashSet< T >::Iterator begin( const HashSet< T >& arr ) { return arr.getBegin(); }
+	template< class T > typename HashSet< T >::Iterator end( const HashSet< T >& arr ) { return arr.getEnd(); }
 }
 
 #include "tiki/../../src/tiki_hash_set.inl"

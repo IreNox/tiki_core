@@ -16,7 +16,7 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	HashMap< TKey, TValue >::HashMap( const std::initializer_list< Pair >& initList )
+	HashMap< TKey, TValue >::HashMap( const std::initializer_list< PairType >& initList )
 	{
 		for( const Pair& pair : initList )
 		{
@@ -45,13 +45,13 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	bool HashMap<TKey, TValue>::hasKey( const TKey& key ) const
+	bool HashMap< TKey, TValue >::hasKey( const TKey& key ) const
 	{
 		return findIndex( key ) != InvalidIndex;
 	}
 
 	template< class TKey, class TValue >
-	TValue* HashMap<TKey, TValue>::find( const TKey& key )
+	TValue* HashMap< TKey, TValue >::find( const TKey& key )
 	{
 		const uintsize index = findIndex( key );
 		if( index == InvalidIndex )
@@ -63,7 +63,7 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	const TValue* HashMap<TKey, TValue>::find( const TKey& key ) const
+	const TValue* HashMap< TKey, TValue >::find( const TKey& key ) const
 	{
 		const uintsize index = findIndex( key );
 		if( index == InvalidIndex )
@@ -75,7 +75,7 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	bool HashMap<TKey, TValue>::findAndCopy( TValue& target, const TKey& key ) const
+	bool HashMap< TKey, TValue >::findAndCopy( TValue& target, const TKey& key ) const
 	{
 		const uintsize index = findIndex( key );
 		if( index == ( uintsize )-1 )
@@ -85,6 +85,18 @@ namespace tiki
 
 		target = m_data[ index ].value;
 		return true;
+	}
+
+	template< class TKey, class TValue >
+	TValue HashMap< TKey, TValue >::findOrDefault( const TKey& key ) const
+	{
+		const uintsize index = findIndex( key );
+		if( index == (uintsize)-1 )
+		{
+			return TValue();
+		}
+
+		return m_data[ index ].value;
 	}
 
 	template< typename TKey, typename TValue >
@@ -110,7 +122,7 @@ namespace tiki
 		{
 			const uint32 index = (hash + hashOffset) & indexMask;
 
-			Pair& mapEntry = m_data[ index ];
+			PairType& mapEntry = m_data[ index ];
 
 			uint64& inUseMask = m_inUseMasks[ index >> 6u ];
 			const uint64 inUseEntryMask = 1ull << (index & 0x3fu);
@@ -150,7 +162,7 @@ namespace tiki
 	}
 
 	template< class TKey, class TValue >
-	void HashMap<TKey, TValue>::insert( const TKey& key, const TValue& value )
+	void HashMap< TKey, TValue >::insert( const TKey& key, const TValue& value )
 	{
 		insertKey( key ) = value;
 	}
@@ -190,7 +202,7 @@ namespace tiki
 					}
 
 					Pair* nextMapEntry = &m_data[ nextIndex ];
-					const ImUiHash nextHash = calculateValueHash( nextMapEntry->key );
+					const TikiHash32 nextHash = calculateValueHash( nextMapEntry->key );
 					if( (nextHash & indexMask) != baseIndex )
 					{
 						break;
@@ -244,9 +256,9 @@ namespace tiki
 	{
 		clear();
 
-		for( ConstIterator it : rhs )
+		for( const PairType& kvp : rhs )
 		{
-			insert( it.getKey(), it.getValue() );
+			insert( kvp.key, kvp.value );
 		}
 
 		return *this;
@@ -273,7 +285,7 @@ namespace tiki
 	template< typename TKey, typename TValue >
 	uintsize HashMap< TKey, TValue >::findIndex( const TKey& key ) const
 	{
-		const ImUiHash hash		= calculateValueHash( key );
+		const TikiHash32 hash	= calculateValueHash( key );
 		const uint32 indexMask	= uint32( m_capacity - 1u );
 
 		for( uint32 hashOffset = 0u; hashOffset < m_capacity; ++hashOffset )
@@ -287,13 +299,13 @@ namespace tiki
 				break;
 			}
 
-			Pair& mapEntry = m_data[ index ];
+			PairType& mapEntry = m_data[ index ];
 			if( mapEntry.key == key )
 			{
 				return index;
 			}
 
-			const ImUiHash mapHash = calculateValueHash( mapEntry.key );
+			const TikiHash32 mapHash = calculateValueHash( mapEntry.key );
 			if( (mapHash & indexMask) != (hash & indexMask) )
 			{
 				break;
@@ -361,7 +373,7 @@ namespace tiki
 	void HashMap< TKey, TValue >::grow( uintsize minCapacity /* = 0u */ )
 	{
 		uint64* newEntriesInUse;
-		Pair* newEntries;
+		PairType* newEntries;
 		bool retry = true;
 		uintsize nextCapacity = max( max< uintsize >( 64u, m_capacity << 1u ), getNextPowerOfTwo( minCapacity ) );
 		while( retry )
@@ -371,7 +383,7 @@ namespace tiki
 			const uint32 nextIndexMask = uint32( nextCapacity - 1u );
 
 			newEntriesInUse = new uint64[ nextCapacity >> 6u ];
-			newEntries = new Pair[ nextCapacity ];
+			newEntries = new PairType[ nextCapacity ];
 			if( !newEntriesInUse || !newEntries )
 			{
 				delete[] newEntriesInUse;
@@ -390,8 +402,8 @@ namespace tiki
 					continue;
 				}
 
-				const Pair& mapEntry = m_data[ mapIndex ];
-				const ImUiHash hash = calculateValueHash( mapEntry.key );
+				const PairType& mapEntry = m_data[ mapIndex ];
+				const TikiHash32 hash = calculateValueHash( mapEntry.key );
 
 				for( uint32 hashOffset = 0; ; ++hashOffset )
 				{
@@ -401,8 +413,8 @@ namespace tiki
 					const uint64 newEntryInUseMask = 1ull << (newIndex & 0x3fu);
 					if( (*newEntryInUse & newEntryInUseMask) != 0u )
 					{
-						const Pair& newEntry = newEntries[ newIndex ];
-						const ImUiHash newHash = calculateValueHash( newEntry.key );
+						const PairType& newEntry = newEntries[ newIndex ];
+						const TikiHash32 newHash = calculateValueHash( newEntry.key );
 						if( hashOffset >= nextCapacity || (newHash & nextIndexMask) != (hash & nextIndexMask) )
 						{
 							retry = true;
@@ -413,7 +425,7 @@ namespace tiki
 
 					*newEntryInUse |= newEntryInUseMask;
 
-					Pair& newEntry = newEntries[ newIndex ];
+					PairType& newEntry = newEntries[ newIndex ];
 					newEntry.key	= mapEntry.key;
 					newEntry.value	= mapEntry.value;
 					break;
@@ -440,71 +452,71 @@ namespace tiki
 
 	template< typename TKey, typename TValue >
 	template< typename T >
-	HashMap< TKey, TValue >::IteratorBase< T >::IteratorBase( HashMap& map, uintsize index )
+	HashMap< TKey, TValue >::IteratorBase< T >::IteratorBase( const HashMap& map, uintsize index )
 		: m_map( map )
 		, m_index( index )
 	{
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	const TKey& HashMap< TKey, TValue >::IteratorBase< T >::getKey() const
+	template< typename TPair >
+	const typename HashMap< TKey, TValue >::IteratorBase< TPair >::KeyType& HashMap< TKey, TValue >::IteratorBase< TPair >::getKey() const
 	{
 		return m_map.m_data[ m_index ].key;
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	T& HashMap< TKey, TValue >::IteratorBase< T >::getValue()
+	template< typename TPair >
+	typename HashMap< TKey, TValue >::IteratorBase< TPair >::ValueType& HashMap< TKey, TValue >::IteratorBase< TPair >::getValue()
 	{
 		return m_map.m_data[ m_index ].value;
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	const T& HashMap< TKey, TValue >::IteratorBase< T >::getValue() const
+	template< typename TPair >
+	const typename HashMap< TKey, TValue >::IteratorBase< TPair >::ValueType& HashMap< TKey, TValue >::IteratorBase< TPair >::getValue() const
 	{
 		return m_map.m_data[ m_index ].value;
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	T& HashMap< TKey, TValue >::IteratorBase< T >::operator*()
+	template< typename TPair >
+	TPair& HashMap< TKey, TValue >::IteratorBase< TPair >::operator*()
 	{
-		return m_map.m_data[ m_index ].value;
+		return m_map.m_data[ m_index ];
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	const T& HashMap< TKey, TValue >::IteratorBase< T >::operator*() const
+	template< typename TPair >
+	const TPair& HashMap< TKey, TValue >::IteratorBase< TPair >::operator*() const
 	{
-		return m_map.m_data[ m_index ].value;
+		return m_map.m_data[ m_index ];
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	T* HashMap< TKey, TValue >::IteratorBase< T >::operator->()
+	template< typename TPair >
+	TPair* HashMap< TKey, TValue >::IteratorBase< TPair >::operator->()
 	{
-		return &m_map.m_data[ m_index ].value;
+		return &m_map.m_data[ m_index ];
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	const T* HashMap< TKey, TValue >::IteratorBase< T >::operator->() const
+	template< typename TPair >
+	const TPair* HashMap< TKey, TValue >::IteratorBase< TPair >::operator->() const
 	{
-		return &m_map.m_data[ m_index ].value;
+		return &m_map.m_data[ m_index ];
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	void HashMap< TKey, TValue >::IteratorBase< T >::operator++()
+	template< typename TPair >
+	void HashMap< TKey, TValue >::IteratorBase< TPair >::operator++()
 	{
 		m_index = m_map.findNextIndex( m_index );
 	}
 
 	template< typename TKey, typename TValue >
-	template< typename T >
-	bool HashMap< TKey, TValue >::IteratorBase< T >::operator!=( const IteratorBase& rhs ) const
+	template< typename TPair >
+	bool HashMap< TKey, TValue >::IteratorBase< TPair >::operator!=( const IteratorBase& rhs ) const
 	{
 		return m_index != rhs.m_index;
 	}

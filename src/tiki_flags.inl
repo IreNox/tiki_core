@@ -35,8 +35,8 @@ namespace tiki
 	template< class TEnum, class TStorage >
 	bool FlagsBase< TEnum, TStorage >::isSet( TEnum value ) const
 	{
-		const TStorage valueFlkag = 1 << TStorage( value );
-		return ( m_flags & value ) == value;
+		const TStorage valueFlag = 1 << TStorage( value );
+		return (m_flags & valueFlag) != 0;
 	}
 
 	template< class TEnum, class TStorage >
