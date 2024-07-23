@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tiki_array.h"
+#include "tiki_array_view.h"
 #include "tiki_functions.h"
 
 #include <initializer_list>
@@ -8,7 +8,7 @@
 namespace tiki
 {
 	template< class T >
-	class DynamicArray : public Array< T >
+	class DynamicArray : public ArrayView< T >
 	{
 	public:
 
@@ -30,9 +30,9 @@ namespace tiki
 
 		inline T&				pushBack();
 		inline T&				pushBack( const T& value );
-		inline void				pushRange( const ArrayView< T >& arrayView );
+		inline void				pushRange( const ArrayView< const T >& arrayView );
 		inline void				pushRange( const T* pData, uintsize length );
-		inline Array< T >		pushRange( uintsize length );
+		inline ArrayView< T >	pushRange( uintsize length );
 
 		inline void				popBack();
 

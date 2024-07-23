@@ -68,9 +68,9 @@ namespace tiki
 	}
 
 	template< class TType, class TValueType >
-	ArrayView< TType > RelativeArray< TType, TValueType >::toView() const
+	ArrayView< const TType > RelativeArray< TType, TValueType >::toView() const
 	{
-		return ArrayView< TType >( get(), m_size );
+		return ArrayView< const TType >( get(), m_size );
 	}
 
 	template< class TType, class TValueType >
@@ -81,7 +81,7 @@ namespace tiki
 	}
 
 	template< class TType, class TValueType >
-	RelativeArray< TType, TValueType >& RelativeArray< TType, TValueType >::operator=( Array< TType > rhs )
+	RelativeArray< TType, TValueType >& RelativeArray< TType, TValueType >::operator=( ArrayView< TType > rhs )
 	{
 		set( rhs.getData(), TValueType( rhs.getLength() ) );
 		return *this;

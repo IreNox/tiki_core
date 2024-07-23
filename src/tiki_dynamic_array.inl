@@ -119,7 +119,7 @@ namespace tiki
 	}
 
 	template< class T >
-	inline void DynamicArray< T >::pushRange( const ArrayView< T >& arrayView )
+	inline void DynamicArray< T >::pushRange( const ArrayView< const T >& arrayView )
 	{
 		pushRange( arrayView.getData(), arrayView.getLength() );
 	}
@@ -135,7 +135,7 @@ namespace tiki
 	}
 
 	template< class T >
-	Array< T > DynamicArray< T >::pushRange( uintsize length )
+	ArrayView< T > DynamicArray< T >::pushRange( uintsize length )
 	{
 		checkCapacity( this->m_length + length );
 

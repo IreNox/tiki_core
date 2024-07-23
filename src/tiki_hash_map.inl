@@ -184,7 +184,7 @@ namespace tiki
 				break;
 			}
 
-			Pair* mapEntry = &m_data[ index ];
+			PairType* mapEntry = &m_data[ index ];
 			if( mapEntry->key == key )
 			{
 				const uint32 baseIndex = hash & indexMask;
@@ -196,12 +196,12 @@ namespace tiki
 
 					uint64* nextInUseMask = &m_inUseMasks[ nextIndex >> 6u ];
 					const uint64 nextIndexInUseMask = 1ull << (nextIndex & 0x3fu);
-					if( (*nextMapEntryInUse & nextIndexInUseMask) == 0u )
+					if( (*nextInUseMask & nextIndexInUseMask) == 0u )
 					{
 						break;
 					}
 
-					Pair* nextMapEntry = &m_data[ nextIndex ];
+					PairType* nextMapEntry = &m_data[ nextIndex ];
 					const TikiHash32 nextHash = calculateValueHash( nextMapEntry->key );
 					if( (nextHash & indexMask) != baseIndex )
 					{

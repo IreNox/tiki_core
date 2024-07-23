@@ -70,7 +70,7 @@ namespace tiki
 		const uintsize index = m_bottom;
 		m_bottom = ( m_bottom + 1u ) % m_capacity;
 		m_length++;
-		return m_pData[ index ];
+		return m_data[ index ];
 	}
 
 	template< class T >
@@ -81,7 +81,7 @@ namespace tiki
 		const uintsize index = m_bottom;
 		m_bottom = ( m_bottom + 1u ) % m_capacity;
 		m_length++;
-		m_pData[ index ] = value;
+		m_data[ index ] = value;
 	}
 
 	template< class T >
@@ -104,7 +104,7 @@ namespace tiki
 		{
 			const uintsize index = m_bottom;
 			m_bottom = ( m_bottom + 1u ) % m_capacity;
-			m_pData[ index ] = pData[ i ];
+			m_data[ index ] = pData[ i ];
 		}
 		m_length += length;
 	}
@@ -125,7 +125,7 @@ namespace tiki
 			return false;
 		}
 
-		target = m_pData[ m_top ];
+		target = m_data[ m_top ];
 		m_top = ( m_top + 1u ) % m_capacity;
 		m_length--;
 		return true;
@@ -135,28 +135,28 @@ namespace tiki
 	T& Queue<T>::getFront()
 	{
 		TIKI_ASSERT( m_length > 0u );
-		return m_pData[ m_top ];
+		return m_data[ m_top ];
 	}
 
 	template< class T >
 	const T& Queue<T>::getFront() const
 	{
 		TIKI_ASSERT( m_length > 0u );
-		return m_pData[ m_top ];
+		return m_data[ m_top ];
 	}
 
 	template< class T >
 	T& Queue<T>::operator[]( uintsize index )
 	{
 		const uintsize queueIndex = (m_top + index) % m_capacity;
-		return m_pData[ queueIndex ];
+		return m_data[ queueIndex ];
 	}
 
 	template< class T >
 	const T& Queue<T>::operator[]( uintsize index ) const
 	{
 		const uintsize queueIndex = (m_top + index) % m_capacity;
-		return m_pData[ queueIndex ];
+		return m_data[ queueIndex ];
 	}
 
 	template< class T >
@@ -167,7 +167,7 @@ namespace tiki
 
 		for( uintsize i = 0u; i < rhs.m_length; ++i )
 		{
-			m_pData[ i ] = rhs[ i ];
+			m_data[ i ] = rhs[ i ];
 		}
 
 		m_top		= 0u;
@@ -194,8 +194,8 @@ namespace tiki
 			pNewData[ i ] = (*this)[ i ];
 		}
 
-		delete[] m_pData;
-		m_pData = pNewData;
+		delete[] m_data;
+		m_data = pNewData;
 		m_top = 0u;
 		m_bottom = m_length;
 		m_capacity = nextCapacity;

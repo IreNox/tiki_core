@@ -1,8 +1,6 @@
 #pragma once
 
-#include "tiki_array.h"
 #include "tiki_array_view.h"
-#include "tiki_core.h"
 
 namespace tiki
 {
@@ -11,29 +9,29 @@ namespace tiki
 	{
 	public:
 
-							RelativeArray();
+									RelativeArray();
 
-		TType*				get();
-		const TType*		get() const;
-		void				set( TType* pData, TValueType size );
+		TType*						get();
+		const TType*				get() const;
+		void						set( TType* pData, TValueType size );
 
-		bool				isValid() const;
+		bool						isValid() const;
 
-		TValueType			getSize() const;
-		TValueType			getOffset() const;
+		TValueType					getSize() const;
+		TValueType					getOffset() const;
 
-		ArrayView< TType >	toView() const;
+		ArrayView< const TType >	toView() const;
 
-		RelativeArray&		operator=( const RelativeArray& rhs );
-		RelativeArray&		operator=( Array< TType > rhs );
+		RelativeArray&				operator=( const RelativeArray& rhs );
+		RelativeArray&				operator=( ArrayView< TType > rhs );
 
-		TType&				operator[]( uintreg index );
-		const TType&		operator[]( uintreg index ) const;
+		TType&						operator[]( uintreg index );
+		const TType&				operator[]( uintreg index ) const;
 
 	private:
 
-		TValueType			m_size;
-		TValueType			m_offset;
+		TValueType					m_size;
+		TValueType					m_offset;
 	};
 
 	template< class T >
@@ -49,4 +47,4 @@ namespace tiki
 	using RelativeArray64 = RelativeArray< T, uint64 >;
 }
 
-#include "tiki_relative_array.inl"
+#include "tiki/../../src/tiki_relative_array.inl"
