@@ -521,38 +521,6 @@ namespace tiki
 		return m_data;
 	}
 
-	char* DynamicString::getBegin()
-	{
-		return m_data;
-	}
-
-	const char* DynamicString::getBegin() const
-	{
-		return m_data;
-	}
-
-	char* DynamicString::getEnd()
-	{
-		return m_data + m_length;
-	}
-
-	const char* DynamicString::getEnd() const
-	{
-		return m_data + m_length;
-	}
-
-	char& DynamicString::operator[]( uintsize index )
-	{
-		TIKI_ASSERT( index < m_length );
-		return m_data[ index ];
-	}
-
-	const char& DynamicString::operator[]( uintsize index ) const
-	{
-		TIKI_ASSERT( index < m_length );
-		return m_data[ index ];
-	}
-
 	DynamicString& DynamicString::operator=( const char* rhs )
 	{
 		assign( rhs );

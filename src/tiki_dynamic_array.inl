@@ -139,7 +139,7 @@ namespace tiki
 	{
 		checkCapacity( this->m_length + length );
 
-		Array< T > result( m_data + m_length, length );
+		ArrayView< T > result( m_data + m_length, length );
 		m_length += length;
 
 		return result;

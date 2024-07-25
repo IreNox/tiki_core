@@ -1,6 +1,5 @@
 #pragma once
 
-#include "tiki/tiki_array.h"
 #include "tiki/tiki_array_view.h"
 
 #include <initializer_list>
@@ -12,41 +11,41 @@ namespace tiki
 	{
 	public:
 
-		inline					StaticArray();
-		inline					StaticArray( const std::initializer_list< T >& initList );
+		inline						StaticArray();
+		inline						StaticArray( const std::initializer_list< T >& initList );
 
-		inline uintsize			getLength() const;
+		inline uintsize				getLength() const;
 
-		inline T*				getData();
-		inline const T*			getData() const;
+		inline T*					getData();
+		inline const T*				getData() const;
 
-		inline T*				getBegin();
-		inline const T*			getBegin() const;
-		inline T*				getEnd();
-		inline const T*			getEnd() const;
+		inline T*					getBegin();
+		inline const T*				getBegin() const;
+		inline T*					getEnd();
+		inline const T*				getEnd() const;
 
-		inline T&				getFront();
-		inline const T&			getFront() const;
-		inline T&				getBack();
-		inline const T&			getBack() const;
+		inline T&					getFront();
+		inline const T&				getFront() const;
+		inline T&					getBack();
+		inline const T&				getBack() const;
 
-		inline T&				getElement( uintsize index );
-		inline const T&			getElement( uintsize index ) const;
-		inline T&				getReverseElement( uintsize index );
-		inline const T&			getReverseElement( uintsize index ) const;
+		inline T&					getElement( uintsize index );
+		inline const T&				getElement( uintsize index ) const;
+		inline T&					getReverseElement( uintsize index );
+		inline const T&				getReverseElement( uintsize index ) const;
 
-		inline Array< T >		toArray();
-		inline ArrayView< T >	toView() const;
+		inline ArrayView< T >		toView();
+		inline ConstArrayView< T >	toView() const;
 
-		inline operator			Array< T >();
-		inline operator			ArrayView< T >() const;
+		inline operator				ArrayView< T >();
+		inline operator				ConstArrayView< T >() const;
 
-		inline T&				operator[]( uintsize index );
-		inline const T&			operator[]( uintsize index ) const;
+		inline T&					operator[]( uintsize index );
+		inline const T&				operator[]( uintsize index ) const;
 
 	private:
 
-		T						m_data[ TSize ];
+		T							m_data[ TSize ];
 	};
 
 	template< class T, uintsize TSize > inline T* begin( StaticArray< T, TSize >& arr ) { return arr.getBegin(); }

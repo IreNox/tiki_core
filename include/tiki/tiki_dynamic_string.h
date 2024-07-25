@@ -64,14 +64,6 @@ namespace tiki
 
 		const char*				toConstCharPointer() const;
 
-		char*					getBegin();
-		const char*				getBegin() const;
-		char*					getEnd();
-		const char*				getEnd() const;
-
-		char&					operator[]( uintsize index );
-		const char&				operator[]( uintsize index ) const;
-
 		DynamicString&			operator=( const char* rhs );
 		DynamicString&			operator=( const StringView& rhs );
 		DynamicString&			operator=( const DynamicString& rhs );

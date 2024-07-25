@@ -115,27 +115,27 @@ namespace tiki
 	}
 
 	template< class T, uintsize TSize >
-	Array< T > StaticArray< T, TSize >::toArray()
-	{
-		return Array< T >( m_data, TSize );
-	}
-
-	template< class T, uintsize TSize >
-	inline ArrayView< T > StaticArray< T, TSize >::toView() const
+	ArrayView< T > StaticArray< T, TSize >::toView()
 	{
 		return ArrayView< T >( m_data, TSize );
 	}
 
 	template< class T, uintsize TSize >
-	inline StaticArray< T, TSize >::operator Array< T >()
+	inline ConstArrayView< T > StaticArray< T, TSize >::toView() const
 	{
-		return toArray();
+		return ArrayView< T >( m_data, TSize );
 	}
 
 	template< class T, uintsize TSize >
-	inline StaticArray< T, TSize >::operator ArrayView< T >() const
+	inline StaticArray< T, TSize >::operator ArrayView< T >()
 	{
-		return toView();
+		return ArrayView< T >( m_data, TSize );
+	}
+
+	template< class T, uintsize TSize >
+	inline StaticArray< T, TSize >::operator ConstArrayView< T >() const
+	{
+		return ConstArrayView< T >( m_data, TSize );
 	}
 
 	template< class T, uintsize TSize >
