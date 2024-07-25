@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tiki_core.h"
+#include "tiki_types.h"
 
 namespace tiki
 {
@@ -41,4 +41,4 @@ namespace tiki
 	using RelativePointer64 = RelativePointer< T, uint64 >;
 }
 
-#include "tiki_relative_pointer.inl"
+#include "tiki/../../src/tiki_relative_pointer.inl"
