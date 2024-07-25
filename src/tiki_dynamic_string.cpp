@@ -486,8 +486,14 @@ namespace tiki
 		return result;
 	}
 
-	char* DynamicString::beginWrite()
+	char* DynamicString::beginWrite( uintsize minCapacity /* = 0u */ )
 	{
+		if( minCapacity )
+		{
+			checkCapacity( minCapacity );
+			terminate( m_length );
+		}
+
 		return m_data;
 	}
 
@@ -496,9 +502,13 @@ namespace tiki
 		if( newLength == (uintsize)-1 )
 		{
 			newLength = strlen( m_data );
+			m_length = newLength;
 		}
-
-		m_length = newLength;
+		else
+		{
+			TIKI_ASSERT( newLength < m_capacity );
+			terminate( newLength );
+		}
 	}
 
 	const char* DynamicString::toConstCharPointer() const

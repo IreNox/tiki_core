@@ -59,7 +59,7 @@ namespace tiki
 		DynamicString			popBack() const;
 		DynamicString			pushBack( char c ) const;
 
-		char*					beginWrite();
+		char*					beginWrite( uintsize minCapacity = 0u );
 		void					endWrite( uintsize newLength = (uintsize)-1 );
 
 		const char*				toConstCharPointer() const;

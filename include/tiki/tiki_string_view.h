@@ -4,7 +4,7 @@
 
 namespace tiki
 {
-	class StringView : public ArrayView< char >
+	class StringView : public ArrayView< const char >
 	{
 	public:
 
