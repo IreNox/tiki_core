@@ -101,6 +101,27 @@ namespace tiki
 	}
 
 	template< class T >
+	void DynamicArray< T >::assign( const DynamicArray& arr )
+	{
+		clear();
+		pushRange( arr );
+	}
+
+	template< class T >
+	void DynamicArray< T >::assign( const T* pData, uintsize length )
+	{
+		clear();
+		pushRange( pData, length );
+	}
+
+	template< class T >
+	void DynamicArray< T >::assign( const ConstArrayView< T >& arrayView )
+	{
+		clear();
+		pushRange( arrayView );
+	}
+
+	template< class T >
 	inline T& DynamicArray< T >::pushBack()
 	{
 		checkCapacity( this->m_length + 1u );
@@ -119,7 +140,7 @@ namespace tiki
 	}
 
 	template< class T >
-	inline void DynamicArray< T >::pushRange( const ArrayView< const T >& arrayView )
+	inline void DynamicArray< T >::pushRange( const ConstArrayView< T >& arrayView )
 	{
 		pushRange( arrayView.getData(), arrayView.getLength() );
 	}
@@ -199,11 +220,11 @@ namespace tiki
 	}
 
 	template< class T >
-	void DynamicArray< T >::swap( const DynamicArray& rhs )
+	void DynamicArray< T >::swap( DynamicArray& rhs )
 	{
-		swap( m_data, rhs.m_data );
-		swap( m_length, rhs.m_length );
-		swap( m_capacity, rhs.m_capacity );
+		tiki::swap( m_data, rhs.m_data );
+		tiki::swap( m_length, rhs.m_length );
+		tiki::swap( m_capacity, rhs.m_capacity );
 	}
 
 	template< class T >

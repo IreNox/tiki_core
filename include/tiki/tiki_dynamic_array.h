@@ -28,9 +28,13 @@ namespace tiki
 		inline T&				insert( uintsize index );
 		inline void				insert( const T& value, uintsize index );
 
+		inline void				assign( const DynamicArray& arr );
+		inline void				assign( const T* pData, uintsize length );
+		inline void				assign( const ConstArrayView< T >& arrayView );
+
 		inline T&				pushBack();
 		inline T&				pushBack( const T& value );
-		inline void				pushRange( const ArrayView< const T >& arrayView );
+		inline void				pushRange( const ConstArrayView< T >& arrayView );
 		inline void				pushRange( const T* pData, uintsize length );
 		inline ArrayView< T >	pushRange( uintsize length );
 
@@ -43,7 +47,7 @@ namespace tiki
 		inline void				eraseUnsorted( const T* pValue );
 		inline void				eraseUnsortedByIndex( uintsize index );
 
-		inline void				swap( const DynamicArray& rhs );
+		inline void				swap( DynamicArray& rhs );
 
 		inline DynamicArray&	operator=( const DynamicArray& rhs );
 

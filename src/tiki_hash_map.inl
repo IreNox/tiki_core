@@ -1,5 +1,6 @@
 #pragma once
 
+#include "tiki/tiki_functions.h"
 #include "tiki/tiki_hash.h"
 
 namespace tiki
@@ -249,6 +250,15 @@ namespace tiki
 	typename HashMap< TKey, TValue >::ConstIterator HashMap< TKey, TValue >::getEnd() const
 	{
 		return ConstIterator( *this, InvalidIndex );
+	}
+
+	template< class TKey, class TValue >
+	void HashMap< TKey, TValue >::swap( HashMap& rhs )
+	{
+		tiki::swap( m_inUseMasks, rhs.m_inUseMasks );
+		tiki::swap( m_data, rhs.m_data );
+		tiki::swap( m_length, rhs.m_length );
+		tiki::swap( m_capacity, rhs.m_capacity );
 	}
 
 	template< class TKey, class TValue >

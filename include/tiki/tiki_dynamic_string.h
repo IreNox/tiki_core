@@ -1,8 +1,8 @@
 #pragma once
 
-#include "tiki/tiki_hash.h"
 #include "tiki/tiki_dynamic_array.h"
 
+#include "tiki/tiki_hash.h"
 #include "tiki/tiki_string_view.h"
 
 namespace tiki

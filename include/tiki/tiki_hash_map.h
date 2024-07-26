@@ -75,6 +75,8 @@ namespace tiki
 		inline Iterator			getEnd();
 		inline ConstIterator	getEnd() const;
 
+		inline void				swap( HashMap& rhs );
+
 		inline HashMap&			operator=( const HashMap& rhs );
 
 		inline TValue&			operator[]( const TKey& key );
