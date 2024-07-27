@@ -323,7 +323,7 @@ namespace tiki
 	{
 		if( m_data == nullptr || rhs == nullptr )
 		{
-			return m_length != 0u && m_data != rhs;
+			return (m_length != 0u || rhs != nullptr) && m_data != rhs;
 		}
 
 		return strcmp( m_data, rhs ) != 0;
