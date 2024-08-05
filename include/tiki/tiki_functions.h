@@ -29,6 +29,9 @@ namespace tiki
 	inline uintsize							countLeadingZeros32( uint32 value );
 	inline uintsize							countLeadingZeros64( uint64 value );
 
+	template< typename T > inline uintsize	countPopulation( T value );
+	template< typename T > inline uintsize	countLeadingZeros( T value );
+
 	template< typename T > inline void		swap( T& value1, T& value2 );
 
 	template< typename TTarget, typename TSource >

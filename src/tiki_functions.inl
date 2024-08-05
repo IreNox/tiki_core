@@ -185,6 +185,30 @@ namespace tiki
 #endif
 	}
 
+	template<>
+	inline uintsize	countPopulation< uint32 >( uint32 value )
+	{
+		return countPopulation32( value );
+	}
+
+	template<>
+	inline uintsize	countPopulation< uint64 >( uint64 value )
+	{
+		return countPopulation64( value );
+	}
+
+	template<>
+	inline uintsize countLeadingZeros< uint32 >( uint32 value )
+	{
+		return countLeadingZeros32( value );
+	}
+
+	template<>
+	inline uintsize countLeadingZeros< uint64 >( uint64 value )
+	{
+		return countLeadingZeros64( value );
+	}
+
 	template< typename T >
 	inline void swap( T& value1, T& value2 )
 	{

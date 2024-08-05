@@ -18,6 +18,8 @@ namespace tiki
 		bool		isAnySet() const;
 		bool		isSet( TEnum value ) const;
 
+		uintsize	getCount() const;
+
 		void		set( TEnum value );
 		void		unset( TEnum value );
 
