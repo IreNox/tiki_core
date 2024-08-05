@@ -7,6 +7,7 @@ namespace tiki
 	template< typename T > inline T			min( T a, T b );
 	template< typename T > inline T			max( T a, T b );
 	template< typename T > inline T			clamp( T value, T min, T max );
+	template< typename T > inline T			lerp( T min, T max, float t );
 
 	inline bool								isBitSet32( uint32 bitMask, uint32 flag );
 	inline bool								isBitSet64( uint64 bitMask, uint64 flag );

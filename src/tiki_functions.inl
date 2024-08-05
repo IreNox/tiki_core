@@ -26,6 +26,14 @@ namespace tiki
 		return value < min ? min : value > max ? max : value;
 	}
 
+	template< typename T >
+	inline T lerp( T min, T max, float t )
+	{
+		const T diff = max - min;
+		return min + T( t * diff );
+	}
+
+
 	inline bool isBitSet32( uint32 bitMask, uint32 flag )
 	{
 		return (bitMask & flag) == flag;
