@@ -41,6 +41,9 @@ namespace tiki
 
 		inline operator		const char*() const;
 	};
+
+	template<>
+	inline TikiHash32 calculateValueHash( const StringView& value );
 }
 
 #include "tiki/../../src/tiki_string_view.inl"

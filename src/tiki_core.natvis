@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 	<Type Name="tiki::StringView">
-		<DisplayString>{m_data,s}</DisplayString>
+		<DisplayString>{m_data,[m_length]s}</DisplayString>
 		<Expand>
 			<Item Name="[pointer]" ExcludeView="simple">m_data</Item>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>

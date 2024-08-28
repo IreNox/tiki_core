@@ -628,7 +628,7 @@ namespace tiki
 			return m_length == 0u;
 		}
 
-		return strcmp( m_data, rhs.getData() ) == 0;
+		return strncmp( m_data, rhs.getData(), m_length ) == 0;
 	}
 
 	bool DynamicString::operator==( const DynamicString& rhs ) const
@@ -642,7 +642,7 @@ namespace tiki
 			return m_length == 0u;
 		}
 
-		return strcmp( m_data, rhs.m_data ) == 0;
+		return strncmp( m_data, rhs.m_data, m_length ) == 0;
 	}
 
 	bool DynamicString::operator!=( const char* rhs ) const
@@ -666,7 +666,7 @@ namespace tiki
 			return m_length != 0u && m_data != rhs.getData();
 		}
 
-		return strcmp( m_data, rhs.getData() ) != 0;
+		return strncmp( m_data, rhs.getData(), m_length ) != 0;
 	}
 
 	bool DynamicString::operator!=( const DynamicString& rhs ) const
@@ -680,7 +680,7 @@ namespace tiki
 			return m_length != 0u && m_data != rhs.getData();
 		}
 
-		return strcmp( m_data, rhs.m_data ) != 0;
+		return strncmp( m_data, rhs.m_data, m_length ) != 0;
 	}
 
 	DynamicString::operator const char*() const

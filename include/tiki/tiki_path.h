@@ -42,4 +42,7 @@ namespace tiki
 
 		DynamicString	m_path;
 	};
+
+	template<>
+	TikiHash32 calculateValueHash( const Path& value );
 }
