@@ -40,6 +40,12 @@ namespace tiki
 	}
 
 	template< class TEnum, class TStorage >
+	uintsize FlagsBase< TEnum, TStorage >::getCount() const
+	{
+		return countPopulation( m_flags );
+	}
+
+	template< class TEnum, class TStorage >
 	void FlagsBase< TEnum, TStorage >::set( TEnum value )
 	{
 		m_flags |= 1 << TStorage( value );
