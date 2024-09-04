@@ -347,4 +347,10 @@ namespace tiki
 	{
 		return m_data;
 	}
+
+	template<>
+	inline TikiHash32 calculateValueHash( const StringView& value )
+	{
+		return calculateHash( value.getData(), value.getLength(), 0u );
+	}
 }

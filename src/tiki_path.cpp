@@ -210,4 +210,10 @@ namespace tiki
 	{
 		return m_path != rhs.m_path;
 	}
+
+	template<>
+	TikiHash32 calculateValueHash( const Path& value )
+	{
+		return calculateValueHash( value.getGenericPath() );
+	}
 }

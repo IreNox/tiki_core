@@ -4,7 +4,8 @@
 
 namespace tiki
 {
-	template< typename T > inline TikiHash32 calculateValueHash( const T& value )
+	template< typename T >
+	inline TikiHash32 calculateValueHash( const T& value )
 	{
 		return calculateHash( &value, sizeof( value ), 0u );
 	}
