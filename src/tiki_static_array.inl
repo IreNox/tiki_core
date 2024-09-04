@@ -11,7 +11,7 @@ namespace tiki
 	template< class T, uintsize TSize >
 	inline StaticArray< T, TSize >::StaticArray( const std::initializer_list< T >& initList )
 	{
-		TIKI_ASSERT( initList.size() <= TSize );
+		TIKI_ASSERT( initList.size() == TSize );
 
 		const T* initValue = initList.begin();
 		for( uintsize i = 0; i < initList.size(); ++i )
