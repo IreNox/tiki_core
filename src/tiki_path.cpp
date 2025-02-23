@@ -129,16 +129,35 @@ namespace tiki
 		return result;
 	}
 
-	Path Path::replaceExtension( const StringView& value ) const
+	Path Path::addExtension( const StringView& value ) const
 	{
-		const uintsize dotIndex = m_path.lastIndexOf( '.' );
-		if( dotIndex == InvalidIndex )
+		Path result = *this;
+
+		if( value.hasElements() && value[ 0u ] != '.' )
 		{
-			return Path();
+			result.m_path.pushBack( '.' );
 		}
 
+		result.m_path += value;
+
+		return result;
+	}
+
+	Path Path::replaceExtension( const StringView& value ) const
+	{
 		Path result = *this;
-		result.m_path.terminate( dotIndex );
+
+		const uintsize dotIndex = m_path.lastIndexOf( '.' );
+		if( dotIndex != InvalidIndex )
+		{
+			result.m_path.terminate( dotIndex );
+		}
+
+		if( value.hasElements() && value[ 0u ] != '.' )
+		{
+			result.m_path.pushBack( '.' );
+		}
+
 		result.m_path += value;
 
 		return result;
@@ -172,7 +191,8 @@ namespace tiki
 		}
 
 		uintsize dotIndex = m_path.lastIndexOf( '.' );
-		if( dotIndex == InvalidIndex )
+		if( dotIndex == InvalidIndex ||
+			dotIndex < slashIndex )
 		{
 			dotIndex = m_path.getLength();
 		}

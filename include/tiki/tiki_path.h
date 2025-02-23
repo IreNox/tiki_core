@@ -26,6 +26,8 @@ namespace tiki
 
 		Path			replaceFilename( const StringView& value ) const;
 		Path			replaceBasename( const StringView& value ) const;
+
+		Path			addExtension( const StringView& value ) const;
 		Path			replaceExtension( const StringView& value ) const;
 
 		DynamicString	getFilename() const;

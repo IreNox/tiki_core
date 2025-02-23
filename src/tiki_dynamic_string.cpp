@@ -376,9 +376,9 @@ namespace tiki
 
 	DynamicString DynamicString::subString( uintsize startIndex, uintsize length ) const
 	{
-		if( startIndex + length >= m_length )
+		if( startIndex + length > m_length )
 		{
-			return DynamicString();
+			length = m_length - startIndex;
 		}
 
 		return DynamicString( m_data + startIndex, length );
