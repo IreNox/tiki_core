@@ -104,4 +104,18 @@
 			</ArrayItems>
 		</Expand>
 	</Type>
+	<Type Name="tiki::LinkedList&lt;*, *&gt;">
+		<DisplayString>{{ size={m_length} }}</DisplayString>
+		<Expand>
+			<Item Name="[size]" ExcludeView="simple">m_length</Item>
+			<CustomListItems>
+				<Variable Name="item" InitialValue="m_firstItem"/>
+				<Loop>
+					<Break Condition="item == nullptr"/>
+					<Item>*item</Item>
+					<Exec>item = *($T1**)(size_t(item) + $T2 + sizeof(void*))</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
 </AutoVisualizer>

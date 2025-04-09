@@ -20,6 +20,11 @@ namespace tiki
 	{
 	}
 
+	inline StringView::StringView( const char* start, const char* end )
+		: ArrayView( start, end - start )
+	{
+	}
+
 	template< uintsize TLen >
 	inline StringView::StringView( const char( &string )[ TLen ] )
 		: ArrayView( string, TLen - 1u )
@@ -302,7 +307,7 @@ namespace tiki
 			return *rhs == '\0';
 		}
 
-		return strcmp( m_data, rhs ) == 0;
+		return strncmp( m_data, rhs, m_length ) == 0;
 	}
 
 	inline bool StringView::operator==( const StringView& rhs ) const
@@ -316,7 +321,7 @@ namespace tiki
 			return m_length == 0u;
 		}
 
-		return strcmp( m_data, rhs.m_data ) == 0;
+		return strncmp( m_data, rhs.m_data, m_length ) == 0;
 	}
 
 	inline bool StringView::operator!=( const char* rhs ) const
@@ -326,7 +331,7 @@ namespace tiki
 			return (m_length != 0u || rhs != nullptr) && m_data != rhs;
 		}
 
-		return strcmp( m_data, rhs ) != 0;
+		return strncmp( m_data, rhs, m_length ) != 0;
 	}
 
 	inline bool StringView::operator!=( const StringView& rhs ) const
@@ -340,13 +345,9 @@ namespace tiki
 			return m_length != 0u && m_data != rhs.getData();
 		}
 
-		return strcmp( m_data, rhs.getData() ) != 0;
+		return strncmp( m_data, rhs.getData(), m_length ) != 0;
 	}
 
-	inline StringView::operator const char*() const
-	{
-		return m_data;
-	}
 
 	template<>
 	inline TikiHash32 calculateValueHash( const StringView& value )

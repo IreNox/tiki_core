@@ -193,8 +193,10 @@
 
 #if TIKI_ENABLED( TIKI_DEBUG ) && TIKI_ENABLED( TIKI_HAS_BREAK )
 #	define TIKI_ASSERT( expr ) if( !( expr ) ) TIKI_BREAK
+#	define TIKI_VERIFY( expr ) if( !( expr ) ) TIKI_BREAK
 #else
 #	define TIKI_ASSERT( expr )
+#	define TIKI_VERIFY( expr ) expr
 #endif
 
 #if TIKI_ENABLED( TIKI_COMPILER_MSVC )
