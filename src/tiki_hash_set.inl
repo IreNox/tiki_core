@@ -202,8 +202,8 @@ namespace tiki
 				break;
 			}
 
-			Pair& mapEntry = m_data[ index ];
-			if( mapEntry.key == key )
+			T& entry = m_data[ index ];
+			if( entry == key )
 			{
 				return index;
 			}

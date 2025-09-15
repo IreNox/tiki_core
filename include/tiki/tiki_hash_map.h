@@ -4,8 +4,6 @@
 #include "tiki/tiki_pair.h"
 #include "tiki/tiki_types.h"
 
-#include <initializer_list>
-
 namespace tiki
 {
 	template< class TKey, class TValue >

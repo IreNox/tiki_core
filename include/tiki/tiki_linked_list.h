@@ -129,7 +129,7 @@ namespace tiki
 		inline void				eraseSortedByValue( Pointer value );
 		inline void				eraseSortedByValue( Reference value );
 
-		inline uint				getLength() const						{ return m_length; }
+		inline uintsize			getLength() const						{ return m_length; }
 
 		inline Iterator			getBegin()								{ return Iterator( m_firstItem ); }
 		inline ConstIterator	getBegin() const						{ return ConstIterator( m_firstItem ); }
@@ -151,7 +151,7 @@ namespace tiki
 
 		Type*					m_firstItem;
 		Type*					m_lastItem;
-		uint					m_length;
+		uintsize				m_length;
 
 		inline Node*			getNode( T* item );
 		inline const Node*		getNode( const T* item ) const;
