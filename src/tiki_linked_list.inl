@@ -97,6 +97,12 @@ namespace tiki
 
 		T* first = m_firstItem;
 		Node* node = getNode( first );
+		if( node->nextItem )
+		{
+			Node* nextNode = getNode( node->nextItem );
+			nextNode->prevItem = nullptr;
+		}
+		
 		m_firstItem = node->nextItem;
 
 		node->prevItem	= nullptr;
@@ -124,6 +130,12 @@ namespace tiki
 
 		T* last = m_lastItem;
 		Node* node = getNode( last );
+		if( node->prevItem )
+		{
+			Node* prevNode = getNode( node->prevItem );
+			prevNode->nextItem = nullptr;
+		}
+		
 		m_lastItem = node->prevItem;
 
 		node->prevItem	= nullptr;
