@@ -12,7 +12,7 @@
 		</Expand>
 	</Type>
 	<Type Name="tiki::DynamicString">
-		<DisplayString>{m_data,s}</DisplayString>
+		<DisplayString>{m_data,[m_length]s}</DisplayString>
 		<Expand>
 			<Item Name="[pointer]" ExcludeView="simple">m_data</Item>
 			<Item Name="[length]" ExcludeView="simple">m_length</Item>
